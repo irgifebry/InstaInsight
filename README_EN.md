@@ -2,7 +2,7 @@
 
 Hello there! 👋 **InstaInsight Analyzer** is a modern web tool designed to help you analyze your Instagram followers. Find out who isn't following you back, identify your biggest fans, and see your mutual friends—all **without needing your password**. It's privacy-focused and easy to use!
 
-![Banner](https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6)
+
 
 ## ✨ Key Features
 - **Privacy First**: We never ask for your password. All data is processed 100% locally in your browser.

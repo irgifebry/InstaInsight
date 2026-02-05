@@ -2,7 +2,7 @@
 
 Halo ges! 👋 **InstaInsight Analyzer** adalah alat keren buat kalian yang pengen tau siapa aja sih yang nggak *follow back* di Instagram, siapa fans setia kalian, sampe siapa aja temen mutualan kalian. Semuanya bisa dicek **tanpa perlu password**, jadi privasi kalian tetep aman pol!
 
-![Banner](https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6)
+
 
 ## ✨ Kenapa Harus Pake Ini?
 - **Privasi Nomor Satu**: Kita nggak bakal minta password kamu. Data diproses langsung di browser kamu sendiri, jadi aman banget.
