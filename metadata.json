@@ -1,0 +1,5 @@
+{
+  "name": "InstaInsight Analyzer",
+  "description": "A privacy-focused dashboard to analyze Instagram followers and following lists. Upload your JSON data to see who isn't following you back and get AI-powered insights on your social graph.",
+  "requestFramePermissions": []
+}

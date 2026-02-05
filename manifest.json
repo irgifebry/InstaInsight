@@ -1,0 +1,25 @@
+{
+  "name": "InstaInsight Analyzer",
+  "version": "1.2",
+  "description": "Analyze Instagram followers and following lists automatically.",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "InstaInsight"
+  },
+  "permissions": [
+    "cookies",
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.instagram.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.instagram.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

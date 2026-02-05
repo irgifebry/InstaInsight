@@ -1,0 +1,21 @@
+{
+    "name": "InstaInsight Analyzer",
+    "short_name": "InstaInsight",
+    "description": "Analisis pengikut Instagram Anda dengan mudah dan aman.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#833AB4",
+    "icons": [
+        {
+            "src": "https://img.icons8.com/gradient/192/instagram-new.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://img.icons8.com/gradient/512/instagram-new.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
