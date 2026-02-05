@@ -27,7 +27,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, color }) => {
           </h2>
           <input
             type="text"
-            placeholder="Cari username di sini ges..."
+            placeholder="Cari username di sini bro..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
@@ -41,7 +41,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, color }) => {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p>Waduh, nggak ada user yang ketemu ges</p>
+            <p>Waduh, zonk! Gak ada user-nya bro.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -65,7 +65,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, color }) => {
                   onClick={() => openInstagram(user.username)}
                   className="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded border border-blue-900 bg-blue-900/20 hover:bg-blue-900/40 transition-all opacity-0 group-hover:opacity-100"
                 >
-                  Cek Profil
+                  Kepoin Profil
                 </button>
               </div>
             ))}

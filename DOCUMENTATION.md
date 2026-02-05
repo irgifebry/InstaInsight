@@ -1,69 +1,69 @@
-# 📑 Dokumentasi Teknis InstaInsight: Bedah Jeroan Sampe Tuntas!
+# 📑 Dokumentasi Teknis InstaInsight: Ngulik Sampe Akar-akarnya!
 
-Halo temen-temen semua! 👋 Dokumentasi ini dibuat biar kalian semua, mau yang baru belajar ngoding (*beginner*) ataupun yang udah senior, bisa paham banget gimananya InstaInsight Analyzer bekerja dari awal sampe akhir. 
+Halo semuanya! 👋 Dokumentasi ini gue buat biar lo semua, mau yang masih baru belajar ngoding (*beginner*) ataupun yang udah mastah, bisa paham banget gimananya InstaInsight Analyzer bekerja dari awal sampe akhir. 
 
-Kita bakal bahas santai tapi tetep mendalam ya!
-
----
-
-## 🚀 Filosofi: Sopan di Depan, Pinter di Belakang
-Prinsip utama kita cuma satu: **Keamanan data user itu harga mati.** 
-Kita nggak pernah, dan nggak akan pernah minta password Instagram kamu. Kita manfaatin sesi browser yang udah ada biar pengambilan datanya legal dan aman.
+Kita bakal bahas santai tapi tetep mendalam ya, no debat!
 
 ---
 
-## 🛠️ Jeroan Teknologi (*Tech Stack*)
-- **React 19**: Versi paling gres buat bikin UI yang responsif.
-- **Vite 6**: Alat *build* yang kenceng banget, bikin ngoding makin asik.
-- **TypeScript**: Biar kita nggak pusing sama error tipe data yang aneh-aneh.
+## 🚀 Filosofi: Aman di Depan, Pinter di Belakang
+Prinsip utama kita cuma satu: **Data lo adalah raja.** 
+Gue gak pernah, dan gak bakal pernah minta password Instagram lo. Kita manfaatin sesi browser yang udah aktif biar pengambilan datanya legal, aman, dan nggak bikin pusing.
+
+---
+
+## 🛠️ "Jeroan" Teknologi (*Tech Stack*)
+- **React 19**: Versi paling gres buat bikin UI yang responsif dan sat-set.
+- **Vite 6**: Alat *build* yang kenceng banget, bikin ngoding makin asik tanpa mager.
+- **TypeScript**: Biar kita gak pusing semriwing gara-gara bug tipe data.
 - **Tailwind CSS**: Biar desainnya makin estetik dan gampang diatur.
-- **PWA**: Biar web kita bisa dikantongin di HP (bisa diinstal).
+- **PWA**: Biar web kita bisa dikantongin di HP (bisa diinstal langsung).
 
 ---
 
-## 🏗️ Cara Kerja & Alur Data (Alurnya Begini Ges...)
+## 🏗️ Cara Kerja & Alur Data (Flow-nya Tuh Gini...)
 
-Aplikasi kita ini tipenya **Client-Only**. Artinya, semua proses terjadi di browser kalian sendiri. Nggak ada data yang terbang ke server asing.
+Aplikasi kita ini tipenya **Client-Only**. Artinya, semua proses "masak" datanya terjadi di browser lo sendiri. Gak ada data yang terbang ke server asing, aman jaya!
 
-### 1. Pengambilan Data (*Data Acquisition*)
+### 1. Pengarahan Data (*Data Acquisition*)
 Instagram itu jagain datanya pake aturan CORS yang ketat banget. Jadi, web luar nggak bisa sembarangan manggil API mereka.
 **Trik Jitunya:**
-- Kita kasih **Scraper Script** (JS murni) yang bisa kalian jalankan di tab `instagram.com`.
-- Karena dijalankan di situ, script kita dapet "izin" buat nanya ke API internal Instagram (`/api/v1/friendships/...`) pake sesi kalian yang udah aktif.
+- Kita kasih **Scraper Script** (JS murni) yang bisa lo jalanin di tab `instagram.com`.
+- Karena dijalankan di situ, script kita dapet "lampu hijau" buat nanya ke API internal Instagram (`/api/v1/friendships/...`) pake sesi lo yang udah aktif.
 
-### 2. Biar Nggak Kena Marah Instagram (*Evasion & Reliability*)
-Instagram itu sensitif banget sama bot. Makanya kita pasang fitur ala senior:
-- **Gonta-ganti App-ID**: Header `X-IG-App-ID` kita gilir biar nggak gampang ketauan kalo itu script otomatis.
-- **Istirahat Dulu Bos (*Rate Limit*)**: Kalo kena error `429`, script kita bakal "break" dulu 60 detik. Ada timer-nya juga, jadi kalian nggak bakal bingung kenapa scriptnya berhenti.
+### 2. Biar Gak Kena Marah Instagram (*Evasion & Reliability*)
+Instagram itu sensitif banget sama bot. Makanya kita pasang fitur ala pro:
+- **Rotasi App-ID**: Header `X-IG-App-ID` kita gilir biar nggak gampang ketauan kalo itu script otomatis.
+- **Waktunya Rehat (*Rate Limit*)**: Kalo kena error `429`, script kita bakal "break" dulu 60 detik. Ada timer-nya juga, jadi lo nggak bakal bingung kenapa scriptnya berhenti.
 
-### 3. Singkronisasi Data
-Setelah dapet ribuan data, script bakal ngirim balik ke aplikasi utama lewat dua pintu:
-- **Pintu Otomatis**: Pake `window.postMessage`.
-- **Pintu Manual**: Copy-Paste manual teks JSON lewat Clipboard (kalo yang otomatis gagal).
+### 3. Sinkronisasi Data
+Setelah dapet ribuan data, script bakal ngirim balik ke aplikasi utama lewat dua jalur:
+- **Jalur Utama**: Pake `window.postMessage` (otomatis sinkron).
+- **Jalur Cadangan**: Copy-Paste manual teks JSON lewat Clipboard (kalo jalur otomatis lagi mager).
 
 ### 4. Otak Pemrosesan (`utils/instagramParser.ts`)
-Di sinilah keajaiban matematika himpunan terjadi:
-- **Gak Follback**: `Following \ Followers` (Yang kalian follow tapi nggak ada di daftar pengikut).
-- **Fans**: `Followers \ Following` (Pengikut yang kalian sendiri nggak follow balik).
-- **Mutual**: `Following ∩ Followers` (Daftar temen yang saling follow).
+Di sinilah keajaiban matematika "pertemanan" terjadi:
+- **Yah, Gak Follback**: `Following \ Followers` (Yang lo follow tapi nggak ada di daftar pengikut).
+- **Fans Rahasia**: `Followers \ Following` (Pengikut yang lo sendiri belum follow balik).
+- **Mutual Sejati**: `Following ∩ Followers` (Daftar temen yang saling support).
 
 ---
 
 ## 📁 Napak Tilas Folder
 ```text
-├── components/          # Kumpulan bumbu UI (Kartu stats, daftar user, scanner)
+├── components/          # Kumpulan komponen UI (Stats card, daftar user, scanner)
 ├── services/            # Logika buat ngobrol sama API Instagram
 ├── utils/
 │   ├── browserScript.ts # Pabrik pembuat script scraper (Injectable JS)
 │   └── instagramParser.ts # Otak yang ngitung relasi follower
 ├── types.ts             # Definisi tipe data biar aman sentosa
-├── App.tsx              # Dirigen utamanya (State & Alur UI)
+├── App.tsx              # Dirjen utamanya (State & Alur UI)
 └── site.webmanifest     # Paspor PWA biar bisa diinstal
 ```
 
 ---
 
-## 🚦 Mulai Ngembangin (Buat Temen-Temen Dev)
+## 🚦 Mulai Ngembangin (Buat Para Dev)
 
 1. **Instal Dulu**: `npm install`.
 2. **Nyalain Server**: `npm run dev`.
@@ -72,9 +72,9 @@ Di sinilah keajaiban matematika himpunan terjadi:
 ---
 
 ## 💡 Ide Buat Masa Depan
-1. **Optimasi Batch**: Durasi *sleep* dibikin dinamis biar makin cepet.
-2. **Download Hasil**: Fitur buat simpen hasil ke file CSV atau Excel.
-3. **Database Lokal**: Pake IndexedDB biar nggak perlu scan ulang kalo cuma mau liat data lama.
+1. **Dynamic Batching**: Durasi *sleep* dibikin dinamis biar makin kenceng.
+2. **Export Data**: Fitur buat simpen hasil ke file CSV atau Excel.
+3. **Persistence**: Pake IndexedDB biar nggak perlu scan ulang kalo pengen liat data lama.
 
 ---
-*Semoga dokumentasi ini ngebantu kalian buat paham dan bahkan ikut ngembangin InstaInsight lebih jauh lagi. Semangat ngoding, ges!*
+*Moga-moga dokumentasi ini ngebantu lo buat paham dan bahkan ikut ngembangin InstaInsight lebih jauh lagi. Semangat ngoding, jangan mager!*

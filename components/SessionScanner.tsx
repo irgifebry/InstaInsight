@@ -203,7 +203,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                 <div className="inline-flex items-center justify-center p-3 bg-gradient-to-tr from-purple-600 to-orange-500 rounded-2xl shadow-lg mb-4">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.163 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
                 </div>
-                <h2 className="text-2xl font-bold text-white">Hubungkan IG Kamu</h2>
+                <h2 className="text-2xl font-bold text-white">Konekin IG Lo Di Sini</h2>
             </div>
 
             <div className="glass-panel p-6 rounded-2xl shadow-2xl border border-slate-700 relative overflow-hidden">
@@ -222,7 +222,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                         {deviceType === 'desktop' && !isExtension && (
                             <div className="animate-fade-in text-left">
                                 <p className="text-slate-300 mb-6 text-center max-w-lg mx-auto text-sm">
-                                    Buat kamu yang pake PC/Laptop, pilih cara yang paling asik di bawah ini ya ges. Tenang, nggak perlu password kok!
+                                    Buat lo yang pake PC/Laptop, pilih cara yang paling asik di bawah ini. Tenang jaya, nggak perlu password kok!
                                 </p>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -230,16 +230,16 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-600 hover:border-slate-500 transition-colors group">
                                         <div className="flex items-center gap-2 mb-3">
                                             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">1</span>
-                                            <h3 className="font-bold text-white text-sm">Pake Bookmark (Gampang Banget!)</h3>
+                                            <h3 className="font-bold text-white text-sm">Cara Gampang: Pake Bookmark</h3>
                                         </div>
                                         <p className="text-xs text-slate-400 mb-4 h-8 leading-4">
-                                            Seret tombol ungu dibawah ini ke <b>Bookmarks Bar</b> browser kamu ya.
+                                            Seret tombol ungu dibawah ini ke <b>Bookmarks Bar</b> browser lo ya.
                                         </p>
                                         <a
                                             ref={bookmarkletRef}
                                             onClick={(e) => e.preventDefault()}
                                             className="flex items-center justify-center gap-2 w-full py-3 bg-slate-700 group-hover:bg-slate-600 border border-slate-500 border-dashed rounded-lg text-indigo-300 font-bold cursor-grab active:cursor-grabbing transition-colors"
-                                            title="Tarik aku ke bookmarks bar ya!"
+                                            title="Tarik gue ke bookmarks bar lo!"
                                         >
                                             <span>🔖</span>
                                             <span>Scan IG Followers</span>
@@ -253,10 +253,10 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-600 hover:border-slate-500 transition-colors">
                                         <div className="flex items-center gap-2 mb-3">
                                             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-pink-500 text-white text-xs font-bold">2</span>
-                                            <h3 className="font-bold text-white text-sm">Pake Console (Gaya Developer)</h3>
+                                            <h3 className="font-bold text-white text-sm">Cara Pro: Pake Console</h3>
                                         </div>
                                         <p className="text-xs text-slate-400 mb-4 h-8 leading-4">
-                                            Copy script, tekan <code className="bg-slate-900 px-1 rounded text-yellow-500 font-mono">F12</code> di tab IG kamu, lalu Paste di Console.
+                                            Copy script, tekan <code className="bg-slate-900 px-1 rounded text-yellow-500 font-mono">F12</code> di tab IG lo, lalu Paste di Console.
                                         </p>
                                         <button
                                             onClick={async () => {
@@ -265,10 +265,10 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                             }}
                                             className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:to-pink-500 text-white font-bold rounded-lg shadow-lg transition-all text-sm"
                                         >
-                                            {scriptCopied ? "✅ Script Udah Kesalin!" : "📋 Copy Script-nya"}
+                                            {scriptCopied ? "✅ Script Udah Aman di Clipboard!" : "📋 Copy Script-nya"}
                                         </button>
                                         <p className="text-[10px] text-slate-500 mt-2 italic text-center">
-                                            Nanti dipaste di Console tab IG kamu ya ges.
+                                            Nanti dipaste di Console tab IG lo ya ges.
                                         </p>
                                     </div>
                                 </div>
@@ -302,7 +302,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
 
                                 {copyFeedback && (
                                     <div className="absolute top-full left-0 right-0 mt-2 text-green-400 text-xs font-bold animate-bounce">
-                                        Script Udah Kesalin!
+                                        Script Udah Aman di Clipboard!
                                     </div>
                                 )}
 
@@ -351,7 +351,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                         <div className="text-center mb-6">
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-900/30 rounded-full border border-blue-500/30 text-blue-200 text-sm animate-pulse">
                                 <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                                Lagi Nungguin Data Masuk...
+                                Lagi Nungguin Datanya Meluncur...
                             </div>
                         </div>
 
@@ -365,7 +365,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 className="w-full py-4 mb-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-                                Paste Otomatis (Gaspol!)
+                                Paste Otomatis (Gaskeun!)
                             </button>
 
                             <div className="relative mb-3">
@@ -396,7 +396,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     onClick={handleManualSubmit}
                                     className="flex-[2] py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-sm transition-colors shadow-lg shadow-indigo-500/20"
                                 >
-                                    Proses Sekarang
+                                    Sikat Sekarang!
                                 </button>
                             </div>
                         </div>

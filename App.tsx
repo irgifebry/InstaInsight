@@ -35,7 +35,7 @@ const App: React.FC = () => {
             </div>
             {step === 'analysis' && (
               <button onClick={reset} className="text-sm text-slate-400 hover:text-white transition-colors">
-                Analisis Baru
+                Ganti Akun / Scan Ulang
               </button>
             )}
           </div>
@@ -48,10 +48,10 @@ const App: React.FC = () => {
           <div className="max-w-4xl mx-auto animate-fade-in-up">
             <div className="text-center mb-10">
               <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-4">
-                Siapa sih yang Gak Follback?
+                Ghosting di IG? No-Debat, Cek di Sini!
               </h1>
               <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-                Kepoin follower IG kamu dengan aman & sat-set tanpa perlu password.
+                Cara tersat-set buat kepoin follower lo tanpa drama password. Aman jaya!
               </p>
             </div>
 
@@ -74,7 +74,7 @@ const App: React.FC = () => {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <StatsCard
-                title="Nggak Follback"
+                title="Gak Follback"
                 count={result.dontFollowBack.length}
                 icon={<svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" /></svg>}
                 colorClass="text-red-500"
@@ -82,7 +82,7 @@ const App: React.FC = () => {
                 onClick={() => setActiveTab('dontFollowBack')}
               />
               <StatsCard
-                title="Fans (Cuma Follow Kamu)"
+                title="Cuma Follow Lo"
                 count={result.fans.length}
                 icon={<svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
                 colorClass="text-green-500"
@@ -104,14 +104,14 @@ const App: React.FC = () => {
               <div className="lg:col-span-3">
                 {activeTab === 'dontFollowBack' && (
                   <UserList
-                    title="Yah, mereka nggak follow kamu balik nih"
+                    title="Yah, kena ghosting... Mereka nggak follback lo"
                     users={result.dontFollowBack}
                     color="text-red-400"
                   />
                 )}
                 {activeTab === 'fans' && (
                   <UserList
-                    title="Fans Sejati (Kamu belum follow balik)"
+                    title="Fans Rahasia (Lo belum follback mereka)"
                     users={result.fans}
                     color="text-green-400"
                   />
