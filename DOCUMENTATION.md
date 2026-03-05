@@ -1,18 +1,18 @@
-# 📑 InstaInsight Technical Documentation: Comprehensive Deep Dive!
+# InstaInsight Technical Documentation: Comprehensive Deep Dive!
 
-Hello everyone! 👋 This documentation is carefully crafted to ensure that every developer—from beginners learning the ropes to seasoned seniors—can fully grasp how InstaInsight Analyzer works from start to finish.
+Hello everyone! This documentation is carefully crafted to ensure that every developer—from beginners learning the ropes to seasoned seniors—can fully grasp how InstaInsight Analyzer works from start to finish.
 
 Let's dive into the technical details in a friendly yet professional manner!
 
 ---
 
-## 🚀 Philosophy: Secure by Design
+## Philosophy: Secure by Design
 Our primary principle is absolute: **User data security is non-negotiable.**
 We will never, and have no way to, ask for your Instagram password. We leverage the user's existing browser session to ensure that data acquisition is both legal and secure within the user's own environment.
 
 ---
 
-## 🛠️ Tech Stack
+## ️ Tech Stack
 - **React 19**: The latest version for building highly responsive and modern UIs.
 - **Vite 6**: A lightning-fast build tool that elevates the developer experience.
 - **TypeScript**: Providing robust type safety to eliminate common bugs during development.
@@ -21,7 +21,7 @@ We will never, and have no way to, ask for your Instagram password. We leverage 
 
 ---
 
-## 🏗️ Architecture & Data Flow
+## ️ Architecture & Data Flow
 
 InstaInsight is a **Client-Only** application. This means 100% of the processing happens locally on your device. No sensitive data is ever sent to external servers.
 
@@ -49,21 +49,21 @@ This is where the mathematical set operations happen:
 
 ---
 
-## 📁 Directory Breakdown
+## Directory Breakdown
 ```text
-├── components/          # UI Component library (StatsCards, UserLists, Scanner)
-├── services/            # Business logic for Instagram API interaction
+├── components/ # UI Component library (StatsCards, UserLists, Scanner)
+├── services/ # Business logic for Instagram API interaction
 ├── utils/
 ├── browserScript.ts # Scraper script generator (Injectable JS)
 └── instagramParser.ts # The "brains" behind the follower analysis
-├── types.ts             # TypeScript interfaces for data safety
-├── App.tsx              # Root component (State Management & UI Flow)
-└── site.webmanifest     # PWA configuration for installation
+├── types.ts # TypeScript interfaces for data safety
+├── App.tsx # Root component (State Management & UI Flow)
+└── site.webmanifest # PWA configuration for installation
 ```
 
 ---
 
-## 🚦 Getting Started (For Developers)
+## Getting Started (For Developers)
 
 1. **Install**: `npm install`.
 2. **Develop**: `npm run dev`.
@@ -71,7 +71,7 @@ This is where the mathematical set operations happen:
 
 ---
 
-## 💡 Future Recommendations
+## Future Recommendations
 1. **Dynamic Batching**: Adjusting sleep durations dynamically based on list size for faster fetching.
 2. **Detailed History**: Tracking exact timestamps of when a user followed/unfollowed (requires more persistent background scanning).
 
