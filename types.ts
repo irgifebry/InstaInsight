@@ -10,6 +10,7 @@ export interface AnalysisResult {
   dontFollowBack: InstagramUser[]; // People I follow, but they don't follow me
   fans: InstagramUser[]; // People who follow me, but I don't follow them
   mutuals: InstagramUser[]; // Follow each other
+  lostFollowers?: InstagramUser[]; // People who were followers in the last scan but aren't now
 }
 
 export interface RawInstagramStringListData {

@@ -1,4 +1,4 @@
-import { InstagramUser, RawInstagramItem, StandardExportFormat } from '../types';
+import { InstagramUser, RawInstagramItem } from '../types';
 
 /**
  * Parses a generic JSON object trying to find Instagram user lists.
@@ -33,31 +33,38 @@ export const parseInstagramJSON = (json: any): InstagramUser[] => {
     } else if (json.relationships_followers && Array.isArray(json.relationships_followers)) {
       extractUsers(json.relationships_followers);
     } else {
-       // Try to find any array property that looks like it has users
-       Object.values(json).forEach((val: any) => {
-         if (Array.isArray(val) && val.length > 0 && val[0].string_list_data) {
-           extractUsers(val);
-         }
-       });
+      // Try to find any array property that looks like it has users
+      Object.values(json).forEach((val: any) => {
+        if (Array.isArray(val) && val.length > 0 && val[0].string_list_data) {
+          extractUsers(val);
+        }
+      });
     }
   }
 
   return users;
 };
 
-export const analyzeData = (following: InstagramUser[], followers: InstagramUser[]) => {
+export const analyzeData = (following: InstagramUser[], followers: InstagramUser[], previousFollowers: InstagramUser[] = []) => {
   const followingMap = new Set(following.map(u => u.username));
   const followersMap = new Set(followers.map(u => u.username));
+  const prevFollowersMap = new Set(previousFollowers.map(u => u.username));
 
   const dontFollowBack = following.filter(u => !followersMap.has(u.username));
   const fans = followers.filter(u => !followingMap.has(u.username));
   const mutuals = following.filter(u => followersMap.has(u.username));
+
+  // People who were in previous but not in current
+  const lostFollowers = previousFollowers.length > 0
+    ? previousFollowers.filter(u => !followersMap.has(u.username))
+    : [];
 
   return {
     following,
     followers,
     dontFollowBack,
     fans,
-    mutuals
+    mutuals,
+    lostFollowers
   };
 };

@@ -1,80 +1,79 @@
-# 📑 Dokumentasi Teknis InstaInsight: Ngulik Sampe Akar-akarnya!
+# 📑 InstaInsight Technical Documentation: Comprehensive Deep Dive!
 
-Halo semuanya! 👋 Dokumentasi ini gue buat biar lo semua, mau yang masih baru belajar ngoding (*beginner*) ataupun yang udah mastah, bisa paham banget gimananya InstaInsight Analyzer bekerja dari awal sampe akhir. 
+Hello everyone! 👋 This documentation is carefully crafted to ensure that every developer—from beginners learning the ropes to seasoned seniors—can fully grasp how InstaInsight Analyzer works from start to finish.
 
-Kita bakal bahas santai tapi tetep mendalam ya, no debat!
-
----
-
-## 🚀 Filosofi: Aman di Depan, Pinter di Belakang
-Prinsip utama kita cuma satu: **Data lo adalah raja.** 
-Gue gak pernah, dan gak bakal pernah minta password Instagram lo. Kita manfaatin sesi browser yang udah aktif biar pengambilan datanya legal, aman, dan nggak bikin pusing.
+Let's dive into the technical details in a friendly yet professional manner!
 
 ---
 
-## 🛠️ "Jeroan" Teknologi (*Tech Stack*)
-- **React 19**: Versi paling gres buat bikin UI yang responsif dan sat-set.
-- **Vite 6**: Alat *build* yang kenceng banget, bikin ngoding makin asik tanpa mager.
-- **TypeScript**: Biar kita gak pusing semriwing gara-gara bug tipe data.
-- **Tailwind CSS**: Biar desainnya makin estetik dan gampang diatur.
-- **PWA**: Biar web kita bisa dikantongin di HP (bisa diinstal langsung).
+## 🚀 Philosophy: Secure by Design
+Our primary principle is absolute: **User data security is non-negotiable.**
+We will never, and have no way to, ask for your Instagram password. We leverage the user's existing browser session to ensure that data acquisition is both legal and secure within the user's own environment.
 
 ---
 
-## 🏗️ Cara Kerja & Alur Data (Flow-nya Tuh Gini...)
-
-Aplikasi kita ini tipenya **Client-Only**. Artinya, semua proses "masak" datanya terjadi di browser lo sendiri. Gak ada data yang terbang ke server asing, aman jaya!
-
-### 1. Pengarahan Data (*Data Acquisition*)
-Instagram itu jagain datanya pake aturan CORS yang ketat banget. Jadi, web luar nggak bisa sembarangan manggil API mereka.
-**Trik Jitunya:**
-- Kita kasih **Scraper Script** (JS murni) yang bisa lo jalanin di tab `instagram.com`.
-- Karena dijalankan di situ, script kita dapet "lampu hijau" buat nanya ke API internal Instagram (`/api/v1/friendships/...`) pake sesi lo yang udah aktif.
-
-### 2. Biar Gak Kena Marah Instagram (*Evasion & Reliability*)
-Instagram itu sensitif banget sama bot. Makanya kita pasang fitur ala pro:
-- **Rotasi App-ID**: Header `X-IG-App-ID` kita gilir biar nggak gampang ketauan kalo itu script otomatis.
-- **Waktunya Rehat (*Rate Limit*)**: Kalo kena error `429`, script kita bakal "break" dulu 60 detik. Ada timer-nya juga, jadi lo nggak bakal bingung kenapa scriptnya berhenti.
-
-### 3. Sinkronisasi Data
-Setelah dapet ribuan data, script bakal ngirim balik ke aplikasi utama lewat dua jalur:
-- **Jalur Utama**: Pake `window.postMessage` (otomatis sinkron).
-- **Jalur Cadangan**: Copy-Paste manual teks JSON lewat Clipboard (kalo jalur otomatis lagi mager).
-
-### 4. Otak Pemrosesan (`utils/instagramParser.ts`)
-Di sinilah keajaiban matematika "pertemanan" terjadi:
-- **Yah, Gak Follback**: `Following \ Followers` (Yang lo follow tapi nggak ada di daftar pengikut).
-- **Fans Rahasia**: `Followers \ Following` (Pengikut yang lo sendiri belum follow balik).
-- **Mutual Sejati**: `Following ∩ Followers` (Daftar temen yang saling support).
+## 🛠️ Tech Stack
+- **React 19**: The latest version for building highly responsive and modern UIs.
+- **Vite 6**: A lightning-fast build tool that elevates the developer experience.
+- **TypeScript**: Providing robust type safety to eliminate common bugs during development.
+- **Tailwind CSS**: For a clean, aesthetic, and easily maintainable design system.
+- **PWA**: Making the web app installable on mobile and desktop for better accessibility.
 
 ---
 
-## 📁 Napak Tilas Folder
+## 🏗️ Architecture & Data Flow
+
+InstaInsight is a **Client-Only** application. This means 100% of the processing happens locally on your device. No sensitive data is ever sent to external servers.
+
+### 1. Data Acquisition
+Instagram enforces strict CORS (Cross-Origin Resource Sharing) policies. This prevents external websites from directly calling their internal APIs.
+**Our Solution:**
+- We provide a **Scraper Script** (pure JavaScript) that the user runs within the context of the `instagram.com` tab.
+- Since it runs in that context, the script is authorized to call the internal Instagram APIs (`/api/v1/friendships/...`) using the user's active session.
+
+### 2. Handling Limits (*Evasion & Reliability*)
+Instagram is very sensitive to automated requests. To handle this like a pro, we've implemented:
+- **App-ID Rotation**: We rotate the `X-IG-App-ID` header to minimize the footprint of the scraper.
+- **Rate Limit Grace Period**: If the script encounters a `429 (Too Many Requests)` error, it automatically pauses for 60 seconds. A transparent countdown timer keeps the user informed throughout the process.
+
+### 3. Data Synchronization
+Once the script has fetched the follower lists, it sends the raw data back to the main app via two channels:
+- **Primary Channel**: Using `window.postMessage` for seamless automatic syncing.
+- **Fallback Channel**: Manual Clipboard JSON transfer for cases where automatic syncing is restricted.
+
+### 4. Processing Core (`utils/instagramParser.ts`)
+This is where the mathematical set operations happen:
+- **Unfollback**: `Following \ Followers` (Those you follow who don't follow you back).
+- **Fans**: `Followers \ Following` (Followers who you haven't followed back).
+- **Mutuals**: `Following ∩ Followers` (Friends who follow each other).
+
+---
+
+## 📁 Directory Breakdown
 ```text
-├── components/          # Kumpulan komponen UI (Stats card, daftar user, scanner)
-├── services/            # Logika buat ngobrol sama API Instagram
+├── components/          # UI Component library (StatsCards, UserLists, Scanner)
+├── services/            # Business logic for Instagram API interaction
 ├── utils/
-│   ├── browserScript.ts # Pabrik pembuat script scraper (Injectable JS)
-│   └── instagramParser.ts # Otak yang ngitung relasi follower
-├── types.ts             # Definisi tipe data biar aman sentosa
-├── App.tsx              # Dirjen utamanya (State & Alur UI)
-└── site.webmanifest     # Paspor PWA biar bisa diinstal
+├── browserScript.ts # Scraper script generator (Injectable JS)
+└── instagramParser.ts # The "brains" behind the follower analysis
+├── types.ts             # TypeScript interfaces for data safety
+├── App.tsx              # Root component (State Management & UI Flow)
+└── site.webmanifest     # PWA configuration for installation
 ```
 
 ---
 
-## 🚦 Mulai Ngembangin (Buat Para Dev)
+## 🚦 Getting Started (For Developers)
 
-1. **Instal Dulu**: `npm install`.
-2. **Nyalain Server**: `npm run dev`.
-3. **Cek Webnya**: Buka `http://localhost:3000`.
-
----
-
-## 💡 Ide Buat Masa Depan
-1. **Dynamic Batching**: Durasi *sleep* dibikin dinamis biar makin kenceng.
-2. **Export Data**: Fitur buat simpen hasil ke file CSV atau Excel.
-3. **Persistence**: Pake IndexedDB biar nggak perlu scan ulang kalo pengen liat data lama.
+1. **Install**: `npm install`.
+2. **Develop**: `npm run dev`.
+3. **View**: Open `http://localhost:3000` in your browser.
 
 ---
-*Moga-moga dokumentasi ini ngebantu lo buat paham dan bahkan ikut ngembangin InstaInsight lebih jauh lagi. Semangat ngoding, jangan mager!*
+
+## 💡 Future Recommendations
+1. **Dynamic Batching**: Adjusting sleep durations dynamically based on list size for faster fetching.
+2. **Detailed History**: Tracking exact timestamps of when a user followed/unfollowed (requires more persistent background scanning).
+
+---
+*We hope this documentation helps you understand and potentially contribute to InstaInsight. Happy coding!*

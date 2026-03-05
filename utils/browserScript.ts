@@ -1,8 +1,7 @@
-// The core logic script - MINIFIED VERSION for Mobile Compatibility
 const SCRIPT_CONTENT = `
 (async () => {
+  console.log("InstaInsight: Scraper script initialized...");
   try {
-      /* Minimal Helper & Setup */
       const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       const getCookie = (name) => {
         const v = "; " + document.cookie;
@@ -11,14 +10,12 @@ const SCRIPT_CONTENT = `
         return null;
       };
 
-      /* UI Overlay */
       if (document.getElementById('ii-overlay')) document.getElementById('ii-overlay').remove();
       const overlay = document.createElement('div');
       overlay.id = 'ii-overlay';
       overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:999999;background:rgba(0,0,0,0.95);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;text-align:center;padding:20px;box-sizing:border-box;";
       
-      // HTML Structure with Explicit Copy Button
-      overlay.innerHTML = '<div><div style="font-size:40px;margin-bottom:10px;">🕵️</div><h3 id="ii-txt" style="margin:0 0 10px;font-size:18px;">Sabar Ges, Lagi Gue Cek...</h3><div style="width:250px;height:6px;background:#333;border-radius:3px;overflow:hidden;margin:0 auto;"><div id="ii-bar" style="width:0%;height:100%;background:#8b5cf6;transition:width 0.3s;"></div></div></div><div id="ii-result" style="display:none;margin-top:30px;width:100%;max-width:320px;"><p style="font-size:14px;color:#cbd5e1;margin-bottom:15px;">Mantap, Scan Beres! Sikat Tombol di Bawah:</p><button id="ii-copy-btn" style="width:100%;padding:16px;background:#22c55e;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(34,197,94,0.4);margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px;">📋 SALIN HASILNYA (GASKAN!)</button><textarea id="ii-json" readonly style="width:100%;height:60px;background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:10px;border-radius:8px;padding:8px;margin-bottom:10px;"></textarea><button id="ii-close-btn" style="background:transparent;border:1px solid #475569;color:#94a3b8;padding:10px;border-radius:8px;width:100%;font-size:12px;">Tutup</button></div>';
+      overlay.innerHTML = "<div><div style='font-size:40px;margin-bottom:10px;'>🕵️</div><h3 id='ii-txt' style='margin:0 0 10px;font-size:18px;'>Loading... Please wait.</h3><div style='width:250px;height:6px;background:#333;border-radius:3px;overflow:hidden;margin:0 auto;'><div id='ii-bar' style='width:0%;height:100%;background:#8b5cf6;transition:width 0.3s;'></div></div></div><div id='ii-result' style='display:none;margin-top:30px;width:100%;max-width:320px;'><p style='font-size:14px;color:#cbd5e1;margin-bottom:15px;'>Scan Complete! Use the button below:</p><button id='ii-copy-btn' style='width:100%;padding:16px;background:#22c55e;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(34,197,94,0.4);margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px;'>📋 COPY RESULTS (LET US GO!)</button><textarea id='ii-json' readonly style='width:100%;height:60px;background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:10px;border-radius:8px;padding:8px;margin-bottom:10px;'></textarea><button id='ii-close-btn' style='background:transparent;border:1px solid #475569;color:#94a3b8;padding:10px;border-radius:8px;width:100%;font-size:12px;'>Close</button></div>";
       
       document.body.appendChild(overlay);
 
@@ -29,7 +26,6 @@ const SCRIPT_CONTENT = `
          if(b) b.style.width = pct + '%';
       };
 
-      /* Communication with Retry Logic */
       const send = async (type, data = {}) => {
         let attempts = 0;
         let success = false;
@@ -48,16 +44,14 @@ const SCRIPT_CONTENT = `
         return success;
       };
 
-      /* Auth Check */
       const userId = getCookie("ds_user_id");
       if (!userId) {
-        update("Waduh, Login Dulu Bro!", 0);
-        alert("Sori ges, login ke Instagram dulu ya biar lancar.");
+        update("Oops, please login first!", 0);
+        alert("Sorry, please login to Instagram first.");
         overlay.remove();
         return;
       }
 
-      /* Config */
       const APP_IDS = ["936619543551", "1217981644879628"];
       let currId = 0;
       let ajax = "1";
@@ -73,12 +67,11 @@ const SCRIPT_CONTENT = `
         "x-instagram-ajax": ajax
       });
 
-      /* Fetcher */
       async function get(type) {
         let list = [];
         let maxId = "";
         let hasNext = true;
-        update("Lagi Narik " + type + " Nih...", 10);
+        update("Fetching " + type + "...", 10);
         
         while (hasNext) {
           try {
@@ -89,7 +82,7 @@ const SCRIPT_CONTENT = `
                 if(r.status === 429) { 
                    let wait = 60;
                    while(wait > 0) {
-                       update("Waduh, Kena Limit! Rehat Bentar... " + wait + " detik", 50);
+                       update("Rate limited! Resting for... " + wait + " seconds", 50);
                        await sleep(1000);
                        wait--;
                    }
@@ -101,7 +94,7 @@ const SCRIPT_CONTENT = `
             list.push(...(j.users||[]).map(x => ({ username: x.username }))); 
             maxId = j.next_max_id;
             hasNext = !!maxId;
-            update("Dapat " + list.length + " " + type, 50);
+            update("Got " + list.length + " " + type, 50);
             await sleep(500 + Math.random() * 300); 
           } catch (e) { break; }
         }
@@ -109,14 +102,16 @@ const SCRIPT_CONTENT = `
       }
 
       const flw = await get("followers");
-      await sleep(500);
+      await sleep(800);
       const flg = await get("following");
 
-      const res = { followers: flw.map(x=>({string_list_data:[{value:x.username}]})), following: flg.map(x=>({string_list_data:[{value:x.username}]})) };
+      const res = { 
+        followers: flw.map(x => ({ string_list_data: [{ value: x.username }] })), 
+        following: flg.map(x => ({ string_list_data: [{ value: x.username }] })) 
+      };
       
-      update("Beres!", 100);
+      update("Done!", 100);
       
-      /* Result Handling */
       const resDiv = document.getElementById('ii-result');
       const copyBtn = document.getElementById('ii-copy-btn');
       const txtArea = document.getElementById('ii-json');
@@ -127,19 +122,18 @@ const SCRIPT_CONTENT = `
           const jsonStr = JSON.stringify(res);
           txtArea.value = jsonStr;
 
-          // Manual Copy Handler
           copyBtn.onclick = () => {
               txtArea.select();
-              txtArea.setSelectionRange(0, 99999); // Mobile fix
+              txtArea.setSelectionRange(0, 99999);
               
               const successCopy = () => {
-                  copyBtn.innerHTML = "✅ SIAP! UDAH KESALIN";
+                  copyBtn.innerHTML = "✅ READY! COPIED";
                   copyBtn.style.background = "#16a34a";
-                  alert("Data Aman! Udah Kesalin. Balik ke Tab Sebelumnya Ya Bro.");
+                  alert("Data safe! Copied. Please return to the previous tab.");
               };
 
               try {
-                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                  if (navigator.clipboard) {
                       navigator.clipboard.writeText(jsonStr).then(successCopy).catch(() => {
                           document.execCommand('copy');
                           successCopy();
@@ -155,30 +149,29 @@ const SCRIPT_CONTENT = `
           };
 
           closeBtn.onclick = () => overlay.remove();
-
-          // Try Auto Copy once initially, but don't rely on it
-          try { navigator.clipboard.writeText(jsonStr); } catch(e){}
+          try { send('IG_DATA_SYNC', res); } catch(e){}
       }
 
   } catch (e) {
     alert("Error: " + e.message);
   }
-})();
-`;
+})();`;
 
 export const getScraperScript = () => {
-  // Safer minification that preserves URL double slashes
   return SCRIPT_CONTENT
-    .replace(/\/\*[\s\S]*?\*\//gm, ' ') // Remove multi-line comments
-    .replace(/(^|[^:])\/\/.*/gm, '$1') // Remove single-line comments but protect URLs
-    .replace(/\n/g, ' ')
+    .replace(/\/\*[\s\S]*?\*\//gm, ' ')
+    .split('\n')
+    .map(line => {
+      const l = line.trim();
+      return l.startsWith('//') ? '' : l;
+    })
+    .filter(line => line.length > 0)
+    .join(' ')
     .replace(/\s+/g, ' ')
     .trim();
 };
 
 export const getBookmarkletHref = () => {
-  // Use encodeURIComponent to ensure special characters (like quotes, spaces) 
-  // are properly encoded for a bookmark URL.
-  const encodedScript = encodeURIComponent(getScraperScript());
-  return `javascript:${encodedScript}`;
+  const script = getScraperScript();
+  return `javascript:(function(){${encodeURIComponent(script)}})();`;
 };

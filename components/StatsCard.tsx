@@ -29,7 +29,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({ title, count, icon, colorC
       </div>
       <div className="flex items-end gap-2">
         <span className="text-3xl font-bold text-white">{count.toLocaleString()}</span>
-        <span className="text-slate-500 text-xs mb-1">akun</span>
+        <span className="text-slate-500 text-xs mb-1">accounts</span>
       </div>
     </div>
   );

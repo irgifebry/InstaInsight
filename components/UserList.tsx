@@ -5,9 +5,10 @@ interface UserListProps {
   users: InstagramUser[];
   title: string;
   color: string; // e.g., 'text-red-500'
+  onExport?: () => void;
 }
 
-export const UserList: React.FC<UserListProps> = ({ users, title, color }) => {
+export const UserList: React.FC<UserListProps> = ({ users, title, color, onExport }) => {
   const [search, setSearch] = useState('');
 
   const filteredUsers = useMemo(() => {
@@ -22,12 +23,23 @@ export const UserList: React.FC<UserListProps> = ({ users, title, color }) => {
     <div className="glass-panel rounded-xl overflow-hidden flex flex-col h-[600px]">
       <div className="p-6 border-b border-slate-700">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <h2 className={`text-xl font-bold ${color}`}>
-            {title} <span className="text-slate-500 text-sm font-normal">({users.length})</span>
-          </h2>
+          <div className="flex flex-col gap-1">
+            <h2 className={`text-xl font-bold ${color}`}>
+              {title} <span className="text-slate-500 text-sm font-normal">({users.length})</span>
+            </h2>
+            {onExport && users.length > 0 && (
+              <button
+                onClick={onExport}
+                className="text-xs uppercase tracking-wider font-bold text-slate-500 hover:text-green-400 flex items-center gap-1 transition-all mt-2 bg-slate-800/50 px-3 py-1.5 rounded-lg active:scale-95 border border-slate-700"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                Download CSV
+              </button>
+            )}
+          </div>
           <input
             type="text"
-            placeholder="Cari username di sini bro..."
+            placeholder="Search username here..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
@@ -41,7 +53,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, color }) => {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p>Waduh, zonk! Gak ada user-nya bro.</p>
+            <p>Oops, nothing found! No users here.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -63,9 +75,9 @@ export const UserList: React.FC<UserListProps> = ({ users, title, color }) => {
 
                 <button
                   onClick={() => openInstagram(user.username)}
-                  className="text-xs text-blue-400 hover:text-blue-300 px-2 py-1 rounded border border-blue-900 bg-blue-900/20 hover:bg-blue-900/40 transition-all opacity-0 group-hover:opacity-100"
+                  className="text-xs text-blue-400 hover:text-blue-300 px-3 py-2 rounded border border-blue-900 bg-blue-900/20 hover:bg-blue-900/40 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
                 >
-                  Kepoin Profil
+                  View Profile
                 </button>
               </div>
             ))}

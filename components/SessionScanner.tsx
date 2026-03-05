@@ -12,13 +12,13 @@ interface SessionScannerProps {
 export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) => {
     const [deviceType, setDeviceType] = useState<'desktop' | 'mobile' | 'extension'>('desktop');
     const [scanState, setScanState] = useState<'idle' | 'waiting' | 'processing' | 'success'>('idle');
+    const [mobileStep, setMobileStep] = useState(1);
     const [manualJson, setManualJson] = useState('');
     const [copyFeedback, setCopyFeedback] = useState(false);
-    const [scriptCopied, setScriptCopied] = useState(false);
 
     const processingRef = useRef(false);
-    const textareaRef = useRef<HTMLTextAreaElement>(null); // Ref for manual paste focus
-    const bookmarkletRef = useRef<HTMLAnchorElement>(null); // Ref for bookmarklet link
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const bookmarkletRef = useRef<HTMLAnchorElement>(null);
 
     // Check if running as Chrome Extension
     const isExtension = typeof chrome !== 'undefined' && !!chrome.runtime && !!chrome.runtime.id;
@@ -36,7 +36,6 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
         }
     }, [isExtension]);
 
-    // Set bookmarklet href via DOM to bypass React security check for javascript: URLs
     useEffect(() => {
         if (bookmarkletRef.current) {
             bookmarkletRef.current.href = getBookmarkletHref();
@@ -53,7 +52,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             const parsedFollowing = parseInstagramJSON(following);
 
             if (parsedFollowers.length === 0 && parsedFollowing.length === 0) {
-                alert("Data kosong. Pastikan script berjalan sampai selesai di Instagram.");
+                alert("Data is empty. Make sure the script runs until completion on Instagram.");
                 setScanState('waiting');
                 processingRef.current = false;
                 return;
@@ -66,7 +65,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             }, 800);
         } catch (e) {
             console.error(e);
-            alert("Gagal membaca data JSON. Pastikan Anda meng-copy SEMUA teks hasil script.");
+            alert("Failed to read JSON data. Make sure you copy ALL the script result text.");
             setScanState('waiting');
             processingRef.current = false;
         }
@@ -87,33 +86,31 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
 
     const handlePasteFromClipboard = async () => {
         try {
-            // Check if API is available
             if (!navigator.clipboard || !navigator.clipboard.readText) {
                 throw new Error("Clipboard API unavailable");
             }
 
             const text = await navigator.clipboard.readText();
             if (!text) {
-                alert("Clipboard kosong atau izin ditolak.");
+                alert("Clipboard is empty or permission denied.");
                 return;
             }
 
-            setManualJson(text); // Show text in textarea for feedback
+            setManualJson(text);
 
             try {
                 const data = JSON.parse(text);
                 if (data.followers && data.following) {
                     processData(data.followers, data.following);
                 } else {
-                    alert("Format data salah. Coba jalankan script lagi.");
+                    alert("Incorrect data format. Try running the script again.");
                 }
             } catch (e) {
-                alert("Data di clipboard bukan JSON yang valid.");
+                alert("Data in clipboard is not valid JSON.");
             }
         } catch (err) {
-            // Fallback for browsers blocking automatic read (Common on Mobile)
             console.warn("Auto-paste failed", err);
-            alert("Browser memblokir paste otomatis.\n\nSilakan PASTE MANUAL di kotak dibawah ini 👇");
+            alert("Browser blocked auto-paste.\n\nPlease PASTE MANUALLY in the box below 👇");
             if (textareaRef.current) {
                 textareaRef.current.focus();
             }
@@ -122,7 +119,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
 
     const handleManualSubmit = () => {
         if (!manualJson.trim()) {
-            alert("Kotak teks masih kosong.");
+            alert("Text box is empty.");
             return;
         }
         try {
@@ -130,14 +127,13 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             if (data.followers && data.following) {
                 processData(data.followers, data.following);
             } else {
-                alert("Format JSON salah.");
+                alert("Invalid JSON format.");
             }
         } catch (e) {
             alert("Error Parsing JSON.");
         }
     };
 
-    // Automatic Listener
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
             if (!event.data || !event.data.type) return;
@@ -178,14 +174,14 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     const handleInteractionStart = async () => {
         const copied = await copyScript();
         if (copied) {
-            setScriptCopied(true);
+            if (mobileStep === 1) setMobileStep(2);
         }
     };
 
     const handleDirectClick = (e: React.MouseEvent) => {
         if (deviceType === 'mobile' && !isExtension) {
             e.preventDefault();
-            alert("⚠️ JANGAN KLIK LANGSUNG!\n\nAgar tidak membuka aplikasi Instagram:\n1. Tekan & Tahan tombol ini.\n2. Pilih 'Buka di Tab Baru' (Open in New Tab).\n\nScript akan otomatis tersalin saat Anda menekan tombol.");
+            alert("⚠️ DON'T CLICK DIRECTLY!\n\nTo avoid opening the Instagram app:\n1. Press & Hold this button.\n2. Select 'Open in New Tab'.\n\nThe script will be automatically copied when you press the button.");
         }
     };
 
@@ -203,146 +199,159 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                 <div className="inline-flex items-center justify-center p-3 bg-gradient-to-tr from-purple-600 to-orange-500 rounded-2xl shadow-lg mb-4">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.163 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
                 </div>
-                <h2 className="text-2xl font-bold text-white">Konekin IG Lo Di Sini</h2>
+                <h2 className="text-2xl font-bold text-white">Connect Your IG Here</h2>
             </div>
 
-            <div className="glass-panel p-6 rounded-2xl shadow-2xl border border-slate-700 relative overflow-hidden">
+            <div className="glass-panel p-6 rounded-2xl shadow-2xl border border-slate-700 relative overflow-hidden min-h-[400px]">
 
                 {scanState === 'idle' && (
-                    <div className="text-center">
+                    <div className="text-center h-full flex flex-col">
 
-                        {/* --- EXTENSION VIEW --- */}
                         {isExtension && (
                             <button onClick={startExtensionProcess} className="w-full max-w-sm py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-1">
-                                1. Mulai Scan
+                                1. Start Scan
                             </button>
                         )}
 
-                        {/* --- DESKTOP VIEW --- */}
                         {deviceType === 'desktop' && !isExtension && (
                             <div className="animate-fade-in text-left">
                                 <p className="text-slate-300 mb-6 text-center max-w-lg mx-auto text-sm">
-                                    Buat lo yang pake PC/Laptop, pilih cara yang paling asik di bawah ini. Tenang jaya, nggak perlu password kok!
+                                    Choose the method that works best for you. Don't worry, no password needed!
                                 </p>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                                    {/* Option 1: Bookmarklet */}
-                                    <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-600 hover:border-slate-500 transition-colors group">
+                                <div className="flex justify-center mb-8">
+                                    <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-600 hover:border-slate-500 transition-colors group max-w-sm w-full mx-auto">
                                         <div className="flex items-center gap-2 mb-3">
                                             <span className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">1</span>
-                                            <h3 className="font-bold text-white text-sm">Cara Gampang: Pake Bookmark</h3>
+                                            <h3 className="font-bold text-white text-sm">Use Bookmark</h3>
                                         </div>
                                         <p className="text-xs text-slate-400 mb-4 h-8 leading-4">
-                                            Seret tombol ungu dibawah ini ke <b>Bookmarks Bar</b> browser lo ya.
+                                            Drag the purple button below to your <b>Bookmarks Bar</b>.
                                         </p>
                                         <a
                                             ref={bookmarkletRef}
                                             onClick={(e) => e.preventDefault()}
                                             className="flex items-center justify-center gap-2 w-full py-3 bg-slate-700 group-hover:bg-slate-600 border border-slate-500 border-dashed rounded-lg text-indigo-300 font-bold cursor-grab active:cursor-grabbing transition-colors"
-                                            title="Tarik gue ke bookmarks bar lo!"
+                                            title="Drag me to your bookmarks bar!"
                                         >
                                             <span>🔖</span>
                                             <span>Scan IG Followers</span>
                                         </a>
                                         <p className="text-[10px] text-slate-500 mt-2 italic text-center">
-                                            Setelah ditarik ke atas, buka <b>Instagram.com</b> lalu klik bookmark tsb.
-                                        </p>
-                                    </div>
-
-                                    {/* Option 2: Console */}
-                                    <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-600 hover:border-slate-500 transition-colors">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-pink-500 text-white text-xs font-bold">2</span>
-                                            <h3 className="font-bold text-white text-sm">Cara Pro: Pake Console</h3>
-                                        </div>
-                                        <p className="text-xs text-slate-400 mb-4 h-8 leading-4">
-                                            Copy script, tekan <code className="bg-slate-900 px-1 rounded text-yellow-500 font-mono">F12</code> di tab IG lo, lalu Paste di Console.
-                                        </p>
-                                        <button
-                                            onClick={async () => {
-                                                await copyScript();
-                                                setScriptCopied(true);
-                                            }}
-                                            className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:to-pink-500 text-white font-bold rounded-lg shadow-lg transition-all text-sm"
-                                        >
-                                            {scriptCopied ? "✅ Script Udah Aman di Clipboard!" : "📋 Copy Script-nya"}
-                                        </button>
-                                        <p className="text-[10px] text-slate-500 mt-2 italic text-center">
-                                            Nanti dipaste di Console tab IG lo ya ges.
+                                            After dragging it up, open <b>Instagram.com</b> and click the bookmark.
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="flex flex-col items-center">
-                                    <div className="text-xs text-slate-500 mb-2">Kalo udah dijalanin script-nya di Instagram:</div>
                                     <button
                                         onClick={() => setScanState('waiting')}
                                         className="px-8 py-3 bg-slate-800 hover:bg-slate-700 border border-green-500/50 hover:border-green-500 text-green-400 font-bold rounded-xl transition-all shadow-lg hover:shadow-green-900/20 flex items-center gap-2"
                                     >
-                                        Lanjut ke Langkah Berikutnya
+                                        Proceed to Next Step
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                                     </button>
                                 </div>
                             </div>
                         )}
 
-                        {/* --- MOBILE VIEW --- */}
                         {deviceType === 'mobile' && !isExtension && (
-                            <div className="relative">
-                                {/* Link Button */}
-                                <a
-                                    href={instagramUrl}
-                                    onTouchStart={handleInteractionStart}
-                                    onContextMenu={handleInteractionStart}
-                                    onClick={handleDirectClick}
-                                    className="block w-full max-w-sm mx-auto py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-1 select-none no-underline cursor-pointer"
-                                >
-                                    1. Tekan Tahan & Pilih "Tab Baru"
-                                </a>
-
-                                {copyFeedback && (
-                                    <div className="absolute top-full left-0 right-0 mt-2 text-green-400 text-xs font-bold animate-bounce">
-                                        Script Udah Aman di Clipboard!
-                                    </div>
-                                )}
-
-                                <div className="mt-6 p-4 bg-slate-800/80 border border-slate-600 rounded-lg text-left max-w-sm mx-auto">
-                                    <p className="text-white text-xs font-bold mb-3 text-center uppercase tracking-wider border-b border-slate-700 pb-2">
-                                        Baca Dulu Bentar
-                                    </p>
-                                    <ol className="list-decimal list-inside text-[11px] text-slate-300 space-y-3">
-                                        <li>
-                                            <span className="text-white font-bold">Tekan & Tahan</span> tombol ungu diatas.
-                                        </li>
-                                        <li>
-                                            Pilih <span className="text-yellow-400 font-bold">"Buka di Tab Baru"</span> (Open in New Tab).
-                                            <div className="text-[10px] text-green-400 mt-1 italic pl-4">
-                                                *Script otomatis tersalin saat Anda menekan tombol.
-                                            </div>
-                                        </li>
-                                        <li>
-                                            Di tab Instagram baru: Ketik <code>javascript:</code> di address bar, lalu PASTE.
-                                        </li>
-                                        <li>
-                                            Kembali kesini & klik tombol dibawah.
-                                        </li>
-                                    </ol>
+                            <div className="flex-1 flex flex-col justify-between">
+                                <div className="flex justify-center gap-2 mb-8">
+                                    {[1, 2, 3].map(s => (
+                                        <div key={s} className={`h-1.5 w-12 rounded-full transition-all duration-500 ${mobileStep >= s ? 'bg-purple-500' : 'bg-slate-700'}`}></div>
+                                    ))}
                                 </div>
 
-                                <div className="mt-6 animate-fade-in-up">
-                                    <div className="flex flex-col items-center">
+                                <div className="animate-fade-in flex-1 flex flex-col items-center justify-center">
+                                    {mobileStep === 1 && (
+                                        <div className="text-center w-full">
+                                            <div className="text-4xl mb-4">📋</div>
+                                            <h3 className="text-xl font-black text-white mb-2 italic">STEP 1: GET THE KEY</h3>
+                                            <p className="text-slate-400 text-sm mb-6 px-4">
+                                                Press and hold the button below to copy the secret script.
+                                            </p>
+                                            <button
+                                                onTouchStart={handleInteractionStart}
+                                                onContextMenu={handleInteractionStart}
+                                                className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-purple-900/40 text-lg active:scale-95 transition-transform"
+                                            >
+                                                PRESS & HOLD TO COPY
+                                            </button>
+                                            {copyFeedback && (
+                                                <p className="mt-3 text-green-400 font-bold animate-bounce text-sm">✅ COPIED! TAP NEXT.</p>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {mobileStep === 2 && (
+                                        <div className="text-center w-full animate-slide-in-right">
+                                            <div className="text-4xl mb-4">🥷</div>
+                                            <h3 className="text-xl font-black text-white mb-2 italic uppercase">Step 2: The Ninja Trick</h3>
+                                            <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-600 text-left mb-6">
+                                                <p className="text-sm text-white mb-4 leading-relaxed">
+                                                    To bypass restrictions, follow this carefully:
+                                                </p>
+                                                <ul className="space-y-3 text-xs text-slate-300">
+                                                    <li className="flex gap-2">
+                                                        <span className="text-purple-400 font-bold">1.</span>
+                                                        <span>Hold the button below & select <b className="text-white">"Open in New Tab"</b>.</span>
+                                                    </li>
+                                                    <li className="flex gap-2">
+                                                        <span className="text-purple-400 font-bold">2.</span>
+                                                        <span>In the new tab, type <code className="bg-slate-900 px-1 rounded text-pink-400 font-mono">javascript:</code> then paste.</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <a
+                                                href={instagramUrl}
+                                                onClick={handleDirectClick}
+                                                className="block w-full py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-900/40 text-lg no-underline text-center"
+                                            >
+                                                GO TO INSTAGRAM TAB
+                                            </a>
+                                        </div>
+                                    )}
+
+                                    {mobileStep === 3 && (
+                                        <div className="text-center w-full animate-slide-in-right">
+                                            <div className="text-4xl mb-4">⏳</div>
+                                            <h3 className="text-xl font-black text-white mb-2 italic uppercase">Step 3: Finish Scaling</h3>
+                                            <p className="text-slate-400 text-sm mb-6 px-4">
+                                                Is the script done? If yes, click below!
+                                            </p>
+                                            <button
+                                                onClick={() => setScanState('waiting')}
+                                                className="w-full py-5 bg-green-600 text-white font-black rounded-2xl shadow-xl shadow-green-900/40 text-lg"
+                                            >
+                                                SCAN COMPLETED!
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex justify-between items-center mt-10 pt-4 border-t border-slate-800">
+                                    <button
+                                        disabled={mobileStep === 1}
+                                        onClick={() => setMobileStep(s => s - 1)}
+                                        className={`text-sm font-bold flex items-center gap-1 ${mobileStep === 1 ? 'text-slate-600' : 'text-slate-400 hover:text-white'}`}
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                        Back
+                                    </button>
+
+                                    {mobileStep < 3 && (
                                         <button
-                                            onClick={() => setScanState('waiting')}
-                                            className="w-full max-w-sm py-3 bg-slate-800 hover:bg-slate-700 border border-indigo-500/50 hover:border-indigo-400 text-indigo-300 hover:text-indigo-200 font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+                                            onClick={() => setMobileStep(s => s + 1)}
+                                            className="px-6 py-2 bg-slate-800 text-purple-400 font-bold rounded-lg text-sm border border-purple-900/50 flex items-center gap-1"
                                         >
-                                            <span>👇</span>
-                                            Klik Disini Setelah Buka IG
+                                            Next
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                                         </button>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                         )}
-
                     </div>
                 )}
 
@@ -351,13 +360,13 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                         <div className="text-center mb-6">
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-900/30 rounded-full border border-blue-500/30 text-blue-200 text-sm animate-pulse">
                                 <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                                Lagi Nungguin Datanya Meluncur...
+                                Waiting for data sync...
                             </div>
                         </div>
 
                         <div className="bg-slate-800 p-5 rounded-xl border border-slate-600 shadow-inner">
                             <label className="block text-sm font-bold text-white mb-4 text-center">
-                                Script sudah dijalankan?
+                                Script already running?
                             </label>
 
                             <button
@@ -365,7 +374,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 className="w-full py-4 mb-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
                             >
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
-                                Paste Otomatis (Gaskeun!)
+                                Auto Paste Results
                             </button>
 
                             <div className="relative mb-3">
@@ -373,7 +382,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     <div className="w-full border-t border-slate-600"></div>
                                 </div>
                                 <div className="relative flex justify-center text-xs">
-                                    <span className="px-2 bg-slate-800 text-slate-400">Atau Paste Manual</span>
+                                    <span className="px-2 bg-slate-800 text-slate-400">Or Paste Manually</span>
                                 </div>
                             </div>
 
@@ -381,7 +390,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 ref={textareaRef}
                                 value={manualJson}
                                 onChange={handleManualInput}
-                                placeholder='Paste hasil script JSON disini...'
+                                placeholder='Paste the JSON result here...'
                                 className="w-full h-24 bg-slate-900 border border-slate-700 rounded-lg p-3 text-[10px] text-slate-300 focus:outline-none focus:border-purple-500 font-mono transition-colors"
                             />
 
@@ -390,13 +399,13 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     onClick={() => setScanState('idle')}
                                     className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-sm transition-colors"
                                 >
-                                    Kembali
+                                    Back
                                 </button>
                                 <button
                                     onClick={handleManualSubmit}
-                                    className="flex-[2] py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-sm transition-colors shadow-lg shadow-indigo-500/20"
+                                    className="flex-[2] py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-lg text-sm transition-colors shadow-lg shadow-indigo-500/20"
                                 >
-                                    Sikat Sekarang!
+                                    Analyze Now!
                                 </button>
                             </div>
                         </div>
@@ -406,17 +415,16 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                 {scanState === 'processing' && (
                     <div className="text-center py-10">
                         <div className="w-12 h-12 border-4 border-slate-700 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
-                        <h3 className="text-white font-bold">Menganalisa Data...</h3>
+                        <h3 className="text-white font-bold">Analyzing Data...</h3>
                     </div>
                 )}
 
                 {scanState === 'success' && (
                     <div className="text-center py-10">
                         <div className="text-5xl mb-4">✅</div>
-                        <h3 className="text-white font-bold">Berhasil!</h3>
+                        <h3 className="text-white font-bold">Success!</h3>
                     </div>
                 )}
-
             </div>
         </div>
     );

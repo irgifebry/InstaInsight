@@ -1,47 +1,102 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InstaInsight - Unfollower Analyzer</title>
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#833AB4">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif']
-            },
-            colors: {
-              instagram: {
-                start: '#833AB4',
-                middle: '#FD1D1D',
-                end: '#FCB045'
-              }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InstaInsight - Unfollower Analyzer</title>
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#833AB4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          },
+          colors: {
+            instagram: {
+              start: '#833AB4',
+              middle: '#FD1D1D',
+              end: '#FCB045'
             }
           }
         }
       }
-    </script>
-    <style>
-      body {
-        background-color: #0f172a;
-        color: #f8fafc;
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+
+    .instagram-gradient {
+      background: linear-gradient(45deg, #833AB4, #FD1D1D, #FCB045);
+    }
+
+    .glass-panel {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes slide-in-right {
+      from {
+        transform: translateX(20px);
+        opacity: 0;
       }
-      .instagram-gradient {
-        background: linear-gradient(45deg, #833AB4, #FD1D1D, #FCB045);
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
       }
-      .glass-panel {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes fade-in-up {
+      from {
+        transform: translateY(10px);
+        opacity: 0;
       }
-    </style>
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.4s ease-out;
+    }
+
+    .animate-slide-in-right {
+      animation: slide-in-right 0.4s ease-out;
+    }
+
+    .animate-fade-in-up {
+      animation: fade-in-up 0.4s ease-out;
+    }
+
+    input,
+    button,
+    a {
+      touch-action: manipulation;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -53,10 +108,12 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/index.css">
 </head>
-  <body>
-    <div id="root"></div>
+
+<body>
+  <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>
+
 </html>
