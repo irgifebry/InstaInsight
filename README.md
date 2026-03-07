@@ -31,10 +31,6 @@ We have a specialized **3-Step Wizard** built into the app for mobile users:
 3. **Step 3**: In the IG tab, type `javascript:` in the address bar and paste the script. 
 4. **Final Step**: Once the scan is done, copy the result and paste it back into the InstaInsight app.
 
-> [!TIP]
-> **Tired of typing `javascript:` manually on mobile?**
-> Check out our **[Mobile Ninja Guide](./mobile_bypass_guide.md)** for 3 ways to bypass this and use InstaInsight like a pro!
-
 ## Developer: Local Installation
 If you want to run this project on your own machine:
 1. **Install Dependencies**:
