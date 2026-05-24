@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from 'react';
+import { Download, Frown, Search, ExternalLink } from 'lucide-react';
 import { InstagramUser } from '../types';
 
 interface UserListProps {
   users: InstagramUser[];
   title: string;
-  color: string; // e.g., 'text-red-500'
+  accentColor: string;
   onExport?: () => void;
 }
 
-export const UserList: React.FC<UserListProps> = ({ users, title, color, onExport }) => {
+export const UserList: React.FC<UserListProps> = ({ users, title, accentColor, onExport }) => {
   const [search, setSearch] = useState('');
 
   const filteredUsers = useMemo(() => {
@@ -20,64 +21,92 @@ export const UserList: React.FC<UserListProps> = ({ users, title, color, onExpor
   };
 
   return (
-    <div className="glass-panel rounded-xl overflow-hidden flex flex-col h-[600px]">
-      <div className="p-6 border-b border-slate-700">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="flex flex-col gap-1">
-            <h2 className={`text-xl font-bold ${color}`}>
-              {title} <span className="text-slate-500 text-sm font-normal">({users.length})</span>
-            </h2>
+    <div className="flex flex-col rounded-2xl overflow-hidden" style={{ background: 'rgba(19,24,36,0.95)', border: '1px solid rgba(255,255,255,0.07)', height: '580px' }}>
+      <div className="p-5 border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div>
+            <h2 className="text-lg font-bold text-white leading-tight">{title}</h2>
+            <p className="text-xs mt-0.5" style={{ color: 'rgba(248,250,252,0.45)' }}>
+              {users.length} accounts found
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             {onExport && users.length > 0 && (
               <button
+                id="export-csv-btn"
                 onClick={onExport}
-                className="text-xs uppercase tracking-wider font-bold text-slate-500 hover:text-green-400 flex items-center gap-1 transition-all mt-2 bg-slate-800/50 px-3 py-1.5 rounded-lg active:scale-95 border border-slate-700"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all active:scale-95"
+                style={{
+                  background: `${accentColor}22`,
+                  color: accentColor,
+                  border: `1px solid ${accentColor}44`,
+                }}
               >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                Download CSV
+                <Download size={13} strokeWidth={2.5} />
+                Export CSV
               </button>
             )}
+            <div className="relative flex-1 sm:w-52">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'rgba(248,250,252,0.35)' }} strokeWidth={2.5} />
+              <input
+                id="user-search-input"
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-xl text-sm text-white focus:outline-none transition-all"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}
+              />
+            </div>
           </div>
-          <input
-            type="text"
-            placeholder="Search username here..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="bg-slate-900 border border-slate-700 text-white px-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-64"
-          />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-3">
         {filteredUsers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-slate-500">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p>Oops, nothing found! No users here.</p>
+          <div className="flex flex-col items-center justify-center h-full gap-3" style={{ color: 'rgba(248,250,252,0.3)' }}>
+            <Frown size={44} strokeWidth={1.5} />
+            <p className="text-sm font-medium">No users found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
             {filteredUsers.map((user, idx) => (
               <div
                 key={`${user.username}-${idx}`}
-                className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 transition-colors border border-transparent hover:border-slate-600 group"
+                className="flex items-center justify-between p-3 rounded-xl group transition-all duration-200 cursor-pointer"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLDivElement).style.background = `${accentColor}18`;
+                  (e.currentTarget as HTMLDivElement).style.borderColor = `${accentColor}44`;
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLDivElement).style.background = 'rgba(255,255,255,0.04)';
+                  (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.06)';
+                }}
               >
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-yellow-500 to-purple-600 p-[2px]">
-                    <div className="h-full w-full rounded-full bg-slate-900 flex items-center justify-center text-xs font-bold text-slate-300">
-                      {user.username.charAt(0).toUpperCase()}
-                    </div>
+                <div className="flex items-center gap-2.5 overflow-hidden min-w-0">
+                  <div
+                    className="h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-black text-white"
+                    style={{ background: `linear-gradient(135deg, ${accentColor}, ${accentColor}88)` }}
+                  >
+                    {user.username.charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-sm font-medium truncate text-slate-200 group-hover:text-white">
-                    {user.username}
+                  <span className="text-sm font-medium truncate text-white/80 group-hover:text-white transition-colors">
+                    @{user.username}
                   </span>
                 </div>
 
                 <button
                   onClick={() => openInstagram(user.username)}
-                  className="text-xs text-blue-400 hover:text-blue-300 px-3 py-2 rounded border border-blue-900 bg-blue-900/20 hover:bg-blue-900/40 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
+                  className="flex-shrink-0 ml-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all active:scale-90"
+                  style={{ background: `${accentColor}22`, color: accentColor }}
+                  title="Open profile"
                 >
-                  View Profile
+                  <ExternalLink size={12} strokeWidth={2.5} />
                 </button>
               </div>
             ))}

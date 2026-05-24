@@ -1,4 +1,17 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import {
+  Camera,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  ClipboardPaste,
+  Copy,
+  Bookmark,
+  Zap,
+  Clock,
+  CheckCircle,
+  Loader2
+} from 'lucide-react';
 import { getScraperScript, getBookmarkletHref } from '../utils/browserScript';
 import { InstagramUser } from '../types';
 import { parseInstagramJSON } from '../utils/instagramParser';
@@ -20,10 +33,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const bookmarkletRef = useRef<HTMLAnchorElement>(null);
 
-    // Check if running as Chrome Extension
     const isExtension = typeof chrome !== 'undefined' && !!chrome.runtime && !!chrome.runtime.id;
-
-    // Dynamic URL with timestamp to force fresh load
     const instagramUrl = `https://www.instagram.com/?t=${Date.now()}`;
 
     useEffect(() => {
@@ -52,7 +62,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             const parsedFollowing = parseInstagramJSON(following);
 
             if (parsedFollowers.length === 0 && parsedFollowing.length === 0) {
-                alert("Data is empty. Make sure the script runs until completion on Instagram.");
+                alert('Data is empty. Make sure the script runs until completion on Instagram.');
                 setScanState('waiting');
                 processingRef.current = false;
                 return;
@@ -65,7 +75,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             }, 800);
         } catch (e) {
             console.error(e);
-            alert("Failed to read JSON data. Make sure you copy ALL the script result text.");
+            alert('Failed to read JSON data. Make sure you copy ALL the script result text.');
             setScanState('waiting');
             processingRef.current = false;
         }
@@ -87,12 +97,12 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     const handlePasteFromClipboard = async () => {
         try {
             if (!navigator.clipboard || !navigator.clipboard.readText) {
-                throw new Error("Clipboard API unavailable");
+                throw new Error('Clipboard API unavailable');
             }
 
             const text = await navigator.clipboard.readText();
             if (!text) {
-                alert("Clipboard is empty or permission denied.");
+                alert('Clipboard is empty or permission denied.');
                 return;
             }
 
@@ -103,14 +113,14 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                 if (data.followers && data.following) {
                     processData(data.followers, data.following);
                 } else {
-                    alert("Incorrect data format. Try running the script again.");
+                    alert('Incorrect data format. Try running the script again.');
                 }
             } catch (e) {
-                alert("Data in clipboard is not valid JSON.");
+                alert('Data in clipboard is not valid JSON.');
             }
         } catch (err) {
-            console.warn("Auto-paste failed", err);
-            alert("Browser blocked auto-paste.\n\nPlease PASTE MANUALLY in the box below 👇");
+            console.warn('Auto-paste failed', err);
+            alert('Browser blocked auto-paste.\n\nPlease PASTE MANUALLY in the box below.');
             if (textareaRef.current) {
                 textareaRef.current.focus();
             }
@@ -119,7 +129,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
 
     const handleManualSubmit = () => {
         if (!manualJson.trim()) {
-            alert("Text box is empty.");
+            alert('Text box is empty.');
             return;
         }
         try {
@@ -127,10 +137,10 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             if (data.followers && data.following) {
                 processData(data.followers, data.following);
             } else {
-                alert("Invalid JSON format.");
+                alert('Invalid JSON format.');
             }
         } catch (e) {
-            alert("Error Parsing JSON.");
+            alert('Error Parsing JSON.');
         }
     };
 
@@ -181,7 +191,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     const handleDirectClick = (e: React.MouseEvent) => {
         if (deviceType === 'mobile' && !isExtension) {
             e.preventDefault();
-            alert("⚠️ DON'T CLICK DIRECTLY!\n\nTo avoid opening the Instagram app:\n1. Press & Hold this button.\n2. Select 'Open in New Tab'.\n\nThe script will be automatically copied when you press the button.");
+            alert('Do not click directly!\n\nTo avoid opening the Instagram app:\n1. Press & Hold this button.\n2. Select "Open in New Tab".\n\nThe script will be automatically copied when you press the button.');
         }
     };
 
@@ -197,7 +207,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
         <div className="max-w-4xl mx-auto">
             <div className="text-center mb-6">
                 <div className="inline-flex items-center justify-center p-3 bg-gradient-to-tr from-purple-600 to-orange-500 rounded-2xl shadow-lg mb-4">
-                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.163 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" /></svg>
+                    <Camera size={32} color="white" strokeWidth={1.5} />
                 </div>
                 <h2 className="text-2xl font-bold text-white">Connect Your IG Here</h2>
             </div>
@@ -234,7 +244,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                             className="flex items-center justify-center gap-2 w-full py-3 bg-slate-700 group-hover:bg-slate-600 border border-slate-500 border-dashed rounded-lg text-indigo-300 font-bold cursor-grab active:cursor-grabbing transition-colors"
                                             title="Drag me to your bookmarks bar!"
                                         >
-                                            <span>🔖</span>
+                                            <Bookmark size={16} strokeWidth={2} />
                                             <span>Scan IG Followers</span>
                                         </a>
                                         <p className="text-[10px] text-slate-500 mt-2 italic text-center">
@@ -249,7 +259,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                         className="px-8 py-3 bg-slate-800 hover:bg-slate-700 border border-green-500/50 hover:border-green-500 text-green-400 font-bold rounded-xl transition-all shadow-lg hover:shadow-green-900/20 flex items-center gap-2"
                                     >
                                         Proceed to Next Step
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                        <ArrowRight size={16} strokeWidth={2} />
                                     </button>
                                 </div>
                             </div>
@@ -266,7 +276,9 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 <div className="animate-fade-in flex-1 flex flex-col items-center justify-center">
                                     {mobileStep === 1 && (
                                         <div className="text-center w-full">
-                                            <div className="text-4xl mb-4">📋</div>
+                                            <div className="flex justify-center mb-4">
+                                                <Copy size={40} color="#a78bfa" strokeWidth={1.5} />
+                                            </div>
                                             <h3 className="text-xl font-black text-white mb-2 italic">STEP 1: GET THE KEY</h3>
                                             <p className="text-slate-400 text-sm mb-6 px-4">
                                                 Press and hold the button below to copy the secret script.
@@ -279,14 +291,16 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                                 PRESS & HOLD TO COPY
                                             </button>
                                             {copyFeedback && (
-                                                <p className="mt-3 text-green-400 font-bold animate-bounce text-sm">✅ COPIED! TAP NEXT.</p>
+                                                <p className="mt-3 text-green-400 font-bold animate-bounce text-sm">COPIED! TAP NEXT.</p>
                                             )}
                                         </div>
                                     )}
 
                                     {mobileStep === 2 && (
                                         <div className="text-center w-full animate-slide-in-right">
-                                            <div className="text-4xl mb-4">🥷</div>
+                                            <div className="flex justify-center mb-4">
+                                                <Zap size={40} color="#a78bfa" strokeWidth={1.5} />
+                                            </div>
                                             <h3 className="text-xl font-black text-white mb-2 italic uppercase">Step 2: The Ninja Trick</h3>
                                             <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-600 text-left mb-6">
                                                 <p className="text-sm text-white mb-4 leading-relaxed">
@@ -315,7 +329,9 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
 
                                     {mobileStep === 3 && (
                                         <div className="text-center w-full animate-slide-in-right">
-                                            <div className="text-4xl mb-4">⏳</div>
+                                            <div className="flex justify-center mb-4">
+                                                <Clock size={40} color="#a78bfa" strokeWidth={1.5} />
+                                            </div>
                                             <h3 className="text-xl font-black text-white mb-2 italic uppercase">Step 3: Finish Scaling</h3>
                                             <p className="text-slate-400 text-sm mb-6 px-4">
                                                 Is the script done? If yes, click below!
@@ -336,7 +352,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                         onClick={() => setMobileStep(s => s - 1)}
                                         className={`text-sm font-bold flex items-center gap-1 ${mobileStep === 1 ? 'text-slate-600' : 'text-slate-400 hover:text-white'}`}
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                        <ChevronLeft size={16} strokeWidth={2} />
                                         Back
                                     </button>
 
@@ -346,7 +362,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                             className="px-6 py-2 bg-slate-800 text-purple-400 font-bold rounded-lg text-sm border border-purple-900/50 flex items-center gap-1"
                                         >
                                             Next
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                            <ChevronRight size={16} strokeWidth={2} />
                                         </button>
                                     )}
                                 </div>
@@ -373,7 +389,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 onClick={handlePasteFromClipboard}
                                 className="w-full py-4 mb-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+                                <ClipboardPaste size={20} strokeWidth={2} />
                                 Auto Paste Results
                             </button>
 
@@ -390,7 +406,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 ref={textareaRef}
                                 value={manualJson}
                                 onChange={handleManualInput}
-                                placeholder='Paste the JSON result here...'
+                                placeholder="Paste the JSON result here..."
                                 className="w-full h-24 bg-slate-900 border border-slate-700 rounded-lg p-3 text-[10px] text-slate-300 focus:outline-none focus:border-purple-500 font-mono transition-colors"
                             />
 
@@ -414,14 +430,14 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
 
                 {scanState === 'processing' && (
                     <div className="text-center py-10">
-                        <div className="w-12 h-12 border-4 border-slate-700 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+                        <Loader2 size={48} color="#a855f7" strokeWidth={2} className="animate-spin mx-auto mb-4" />
                         <h3 className="text-white font-bold">Analyzing Data...</h3>
                     </div>
                 )}
 
                 {scanState === 'success' && (
                     <div className="text-center py-10">
-                        <div className="text-5xl mb-4">✅</div>
+                        <CheckCircle size={48} color="#22c55e" strokeWidth={1.5} className="mx-auto mb-4" />
                         <h3 className="text-white font-bold">Success!</h3>
                     </div>
                 )}

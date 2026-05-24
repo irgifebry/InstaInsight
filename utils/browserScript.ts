@@ -1,6 +1,5 @@
 const SCRIPT_CONTENT = `
 (async () => {
-  console.log("InstaInsight: Scraper script initialized...");
   try {
       const sleep = (ms) => new Promise(r => setTimeout(r, ms));
       const getCookie = (name) => {
@@ -15,7 +14,7 @@ const SCRIPT_CONTENT = `
       overlay.id = 'ii-overlay';
       overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:999999;background:rgba(0,0,0,0.95);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;text-align:center;padding:20px;box-sizing:border-box;";
       
-      overlay.innerHTML = "<div><div style='font-size:40px;margin-bottom:10px;'>🕵️</div><h3 id='ii-txt' style='margin:0 0 10px;font-size:18px;'>Loading... Please wait.</h3><div style='width:250px;height:6px;background:#333;border-radius:3px;overflow:hidden;margin:0 auto;'><div id='ii-bar' style='width:0%;height:100%;background:#8b5cf6;transition:width 0.3s;'></div></div></div><div id='ii-result' style='display:none;margin-top:30px;width:100%;max-width:320px;'><p style='font-size:14px;color:#cbd5e1;margin-bottom:15px;'>Scan Complete! Use the button below:</p><button id='ii-copy-btn' style='width:100%;padding:16px;background:#22c55e;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(34,197,94,0.4);margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px;'>📋 COPY RESULTS (LET US GO!)</button><textarea id='ii-json' readonly style='width:100%;height:60px;background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:10px;border-radius:8px;padding:8px;margin-bottom:10px;'></textarea><button id='ii-close-btn' style='background:transparent;border:1px solid #475569;color:#94a3b8;padding:10px;border-radius:8px;width:100%;font-size:12px;'>Close</button></div>";
+      overlay.innerHTML = "<div><h3 id='ii-txt' style='margin:0 0 10px;font-size:18px;'>Loading... Please wait.</h3><div style='width:250px;height:6px;background:#333;border-radius:3px;overflow:hidden;margin:0 auto;'><div id='ii-bar' style='width:0%;height:100%;background:#8b5cf6;transition:width 0.3s;'></div></div></div><div id='ii-result' style='display:none;margin-top:30px;width:100%;max-width:320px;'><p style='font-size:14px;color:#cbd5e1;margin-bottom:15px;'>Scan Complete! Use the button below:</p><button id='ii-copy-btn' style='width:100%;padding:16px;background:#22c55e;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(34,197,94,0.4);margin-bottom:15px;display:flex;align-items:center;justify-content:center;gap:8px;'>COPY RESULTS</button><textarea id='ii-json' readonly style='width:100%;height:60px;background:#1e293b;border:1px solid #334155;color:#94a3b8;font-size:10px;border-radius:8px;padding:8px;margin-bottom:10px;'></textarea><button id='ii-close-btn' style='background:transparent;border:1px solid #475569;color:#94a3b8;padding:10px;border-radius:8px;width:100%;font-size:12px;'>Close</button></div>";
       
       document.body.appendChild(overlay);
 
@@ -127,7 +126,7 @@ const SCRIPT_CONTENT = `
               txtArea.setSelectionRange(0, 99999);
               
               const successCopy = () => {
-                  copyBtn.innerHTML = "✅ READY! COPIED";
+                  copyBtn.innerHTML = "READY! COPIED";
                   copyBtn.style.background = "#16a34a";
                   alert("Data safe! Copied. Please return to the previous tab.");
               };
@@ -155,7 +154,7 @@ const SCRIPT_CONTENT = `
   } catch (e) {
     alert("Error: " + e.message);
   }
-})();`;
+})()`;
 
 export const getScraperScript = () => {
   return SCRIPT_CONTENT

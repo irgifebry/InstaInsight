@@ -1,21 +1,68 @@
 import React, { useState } from 'react';
+import { UserX, UserCheck, Users, UserMinus, RefreshCw, Activity } from 'lucide-react';
 import { InstagramUser, AnalysisResult } from './types';
 import { analyzeData } from './utils/instagramParser';
 import { StatsCard } from './components/StatsCard';
 import { UserList } from './components/UserList';
 import { SessionScanner } from './components/SessionScanner';
 
+type TabKey = 'dontFollowBack' | 'fans' | 'mutuals' | 'lostFollowers';
+
+const TABS: {
+  key: TabKey;
+  label: string;
+  title: string;
+  icon: React.ReactNode;
+  gradientFrom: string;
+  gradientTo: string;
+  accentColor: string;
+}[] = [
+  {
+    key: 'dontFollowBack',
+    label: 'Not Following Back',
+    title: 'Ghosted — they are not following you back',
+    icon: <UserX size={20} color="white" strokeWidth={2} />,
+    gradientFrom: '#E1306C',
+    gradientTo: '#C13584',
+    accentColor: '#E1306C',
+  },
+  {
+    key: 'fans',
+    label: 'Secret Fans',
+    title: "Secret fans — you haven't followed them back",
+    icon: <UserCheck size={20} color="white" strokeWidth={2} />,
+    gradientFrom: '#405DE6',
+    gradientTo: '#5B51D8',
+    accentColor: '#405DE6',
+  },
+  {
+    key: 'mutuals',
+    label: 'Mutual Friends',
+    title: 'Mutual friends — following each other',
+    icon: <Users size={20} color="white" strokeWidth={2} />,
+    gradientFrom: '#FCAF45',
+    gradientTo: '#F77737',
+    accentColor: '#FCAF45',
+  },
+  {
+    key: 'lostFollowers',
+    label: 'Recently Unfollowed',
+    title: 'Recently unfollowed you since last scan',
+    icon: <UserMinus size={20} color="white" strokeWidth={2} />,
+    gradientFrom: '#FD1D1D',
+    gradientTo: '#F56040',
+    accentColor: '#FD1D1D',
+  },
+];
+
 const App: React.FC = () => {
   const [step, setStep] = useState<'upload' | 'analysis'>('upload');
-
   const [followingData, setFollowingData] = useState<InstagramUser[]>([]);
   const [followersData, setFollowersData] = useState<InstagramUser[]>([]);
-  const [previousFollowersData, setPreviousFollowersData] = useState<InstagramUser[]>([]);
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [activeTab, setActiveTab] = useState<'dontFollowBack' | 'fans' | 'mutuals' | 'lostFollowers'>('dontFollowBack');
+  const [activeTab, setActiveTab] = useState<TabKey>('dontFollowBack');
   const [previousScanDate, setPreviousScanDate] = useState<string | null>(null);
 
-  // Load from persistence
   React.useEffect(() => {
     const saved = localStorage.getItem('instainsight_last_scan');
     if (saved) {
@@ -23,44 +70,33 @@ const App: React.FC = () => {
         const { following, followers, date } = JSON.parse(saved);
         setFollowingData(following);
         setFollowersData(followers);
-        setPreviousFollowersData(followers);
         setPreviousScanDate(date);
         const analysis = analyzeData(following, followers, followers);
         setResult(analysis);
         setStep('analysis');
       } catch (e) {
-        console.error("Failed to load saved scan", e);
+        console.error('Failed to load saved scan', e);
       }
     }
   }, []);
 
-  // Save to persistence
   const saveScan = (following: InstagramUser[], followers: InstagramUser[]) => {
-    setPreviousFollowersData(followersData);
-
-    const data = {
-      following,
-      followers,
-      date: new Date().toISOString()
-    };
+    const data = { following, followers, date: new Date().toISOString() };
     localStorage.setItem('instainsight_last_scan', JSON.stringify(data));
     setPreviousScanDate(data.date);
   };
 
-  // CSV Export Helper
   const exportToCSV = (users: InstagramUser[], filename: string) => {
     const headers = ['Username', 'Profile Link', 'Scan Date'];
     const rows = users.map(u => [
       u.username,
       u.href || `https://instagram.com/${u.username}`,
-      u.timestamp ? new Date(u.timestamp * 1000).toLocaleString() : 'N/A'
+      u.timestamp ? new Date(u.timestamp * 1000).toLocaleString() : 'N/A',
     ]);
-
     const csvContent = [
       headers.join(','),
-      ...rows.map(r => r.map(cell => `"${cell}"`).join(','))
+      ...rows.map(r => r.map(cell => `"${cell}"`).join(',')),
     ].join('\n');
-
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
@@ -72,9 +108,8 @@ const App: React.FC = () => {
     document.body.removeChild(link);
   };
 
-  // Reset
   const reset = () => {
-    if (confirm("Are you sure? This will clear the current analysis view. (Saved data will stay in storage until replaced)")) {
+    if (confirm('Reset view? Saved scan data stays in storage until replaced.')) {
       setStep('upload');
       setFollowingData([]);
       setFollowersData([]);
@@ -82,134 +117,172 @@ const App: React.FC = () => {
     }
   };
 
+  const activeTabConfig = TABS.find(t => t.key === activeTab)!;
+
+  const getResultCount = (key: TabKey): number => {
+    if (!result) return 0;
+    if (key === 'lostFollowers') return result.lostFollowers?.length || 0;
+    return result[key].length;
+  };
+
   return (
-    <div className="min-h-screen pb-20 font-sans selection:bg-pink-500 selection:text-white">
-      {/* Header */}
-      <nav className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+    <div className="min-h-screen font-sans" style={{ background: '#090b11' }}>
+      <nav
+        className="sticky top-0 z-50 backdrop-blur-xl"
+        style={{ background: 'rgba(9,11,17,0.9)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg instagram-gradient flex items-center justify-center text-white font-bold text-lg">
-                I
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-3">
+              <div
+                className="h-8 w-8 rounded-xl flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #405DE6, #833AB4, #E1306C, #F77737, #FFDC80)' }}
+              >
+                <Activity size={16} color="white" strokeWidth={2.5} />
               </div>
-              <span className="font-bold text-xl tracking-tight text-white">InstaInsight</span>
+              <span className="font-black text-white tracking-tight text-lg">InstaInsight</span>
             </div>
+
             {step === 'analysis' && (
-              <button onClick={reset} className="text-sm text-slate-400 hover:text-white transition-colors">
-                Change Account / Rescan
+              <button
+                id="rescan-btn"
+                onClick={reset}
+                className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl transition-all active:scale-95"
+                style={{
+                  background: 'rgba(255,255,255,0.07)',
+                  color: 'rgba(248,250,252,0.7)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }}
+              >
+                <RefreshCw size={12} strokeWidth={2.5} />
+                Rescan
               </button>
             )}
           </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {step === 'upload' && (
           <div className="max-w-4xl mx-auto animate-fade-in-up">
             <div className="text-center mb-10">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-4">
-                Ghosted on IG? No-Debate, Check Here!
+              <div
+                className="inline-block text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6"
+                style={{ background: 'rgba(64,93,230,0.18)', color: '#405DE6', border: '1px solid rgba(64,93,230,0.3)' }}
+              >
+                No password needed
+              </div>
+              <h1
+                className="text-5xl sm:text-6xl font-black tracking-tight mb-4 leading-none"
+                style={{
+                  background: 'linear-gradient(135deg, #405DE6, #833AB4, #E1306C, #F77737, #FFDC80)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                Know Your<br />Followers
               </h1>
-              <p className="text-lg text-slate-400 max-w-2xl mx-auto">
-                The fastest way to check your followers without password drama. Stay safe!
+              <p className="text-base max-w-lg mx-auto leading-relaxed" style={{ color: 'rgba(248,250,252,0.5)' }}>
+                Find who ghosted you, your secret fans, mutual friends, and recent unfollowers — all locally and privately.
               </p>
             </div>
 
-            <SessionScanner onDataLoaded={(following, followers) => {
-              // following/followers are the NEW results
-              // followersData is the PREVIOUS result from state
-              setFollowingData(following);
-              setFollowersData(followers);
-              saveScan(following, followers);
-
-              const analysis = analyzeData(following, followers, followersData);
-              setResult(analysis);
-              setStep('analysis');
-            }} />
+            <SessionScanner
+              onDataLoaded={(following, followers) => {
+                setFollowingData(following);
+                setFollowersData(followers);
+                saveScan(following, followers);
+                const analysis = analyzeData(following, followers, followersData);
+                setResult(analysis);
+                setStep('analysis');
+              }}
+            />
           </div>
         )}
 
         {step === 'analysis' && result && (
           <div className="animate-fade-in">
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <StatsCard
-                title="Not Following Back"
-                count={result.dontFollowBack.length}
-                icon={<svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM21 12h-6" /></svg>}
-                colorClass="text-red-500"
-                isActive={activeTab === 'dontFollowBack'}
-                onClick={() => setActiveTab('dontFollowBack')}
-              />
-              <StatsCard
-                title="Only Following You"
-                count={result.fans.length}
-                icon={<svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
-                colorClass="text-green-500"
-                isActive={activeTab === 'fans'}
-                onClick={() => setActiveTab('fans')}
-              />
-              <StatsCard
-                title="Mutual Friends"
-                count={result.mutuals.length}
-                icon={<svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>}
-                colorClass="text-blue-500"
-                isActive={activeTab === 'mutuals'}
-                onClick={() => setActiveTab('mutuals')}
-              />
-              <StatsCard
-                title="Recently Unfollowed"
-                count={result.lostFollowers?.length || 0}
-                icon={<svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12h-6m6 0l-3-3m3 3l-3 3" /></svg>}
-                colorClass="text-orange-500"
-                isActive={activeTab === 'lostFollowers'}
-                onClick={() => setActiveTab('lostFollowers')}
-              />
-            </div>
-
             {previousScanDate && (
-              <div className="text-center mb-6 text-xs text-slate-500 animate-fade-in">
-                Last scan performed on: <span className="text-slate-400 font-medium">{new Date(previousScanDate).toLocaleString()}</span>
+              <div className="flex items-center gap-2 mb-6 text-xs" style={{ color: 'rgba(248,250,252,0.35)' }}>
+                <Activity size={12} strokeWidth={2} />
+                Last scan: {new Date(previousScanDate).toLocaleString()}
               </div>
             )}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-3">
-                {activeTab === 'dontFollowBack' && (
-                  <UserList
-                    title="Sad, ghosted... They are not following you back"
-                    users={result.dontFollowBack}
-                    color="text-red-400"
-                    onExport={() => exportToCSV(result.dontFollowBack, 'not_following_back')}
-                  />
-                )}
-                {activeTab === 'fans' && (
-                  <UserList
-                    title="Secret Fans (You haven't followed them back)"
-                    users={result.fans}
-                    color="text-green-400"
-                    onExport={() => exportToCSV(result.fans, 'fans')}
-                  />
-                )}
-                {activeTab === 'mutuals' && (
-                  <UserList
-                    title="Mutual Friends"
-                    users={result.mutuals}
-                    color="text-blue-400"
-                    onExport={() => exportToCSV(result.mutuals, 'mutual_friends')}
-                  />
-                )}
-                {activeTab === 'lostFollowers' && (
-                  <UserList
-                    title="Whoops! These users recently unfollowed you"
-                    users={result.lostFollowers || []}
-                    color="text-orange-400"
-                    onExport={() => exportToCSV(result.lostFollowers || [], 'recently_unfollowed')}
-                  />
-                )}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+              {TABS.map(tab => (
+                <StatsCard
+                  key={tab.key}
+                  title={tab.label}
+                  count={getResultCount(tab.key)}
+                  icon={tab.icon}
+                  gradientFrom={tab.gradientFrom}
+                  gradientTo={tab.gradientTo}
+                  isActive={activeTab === tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                />
+              ))}
+            </div>
+
+            <div
+              className="rounded-2xl overflow-hidden"
+              style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+            >
+              <div
+                className="flex gap-0 overflow-x-auto"
+                style={{ background: 'rgba(19,24,36,0.95)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+              >
+                {TABS.map(tab => (
+                  <button
+                    key={tab.key}
+                    id={`tab-${tab.key}`}
+                    onClick={() => setActiveTab(tab.key)}
+                    className="flex items-center gap-2 px-5 py-3.5 text-sm font-bold whitespace-nowrap transition-all relative"
+                    style={{
+                      color: activeTab === tab.key ? tab.accentColor : 'rgba(248,250,252,0.4)',
+                      background: 'transparent',
+                    }}
+                  >
+                    {tab.label}
+                    <span
+                      className="text-xs px-2 py-0.5 rounded-full font-black"
+                      style={{
+                        background: activeTab === tab.key ? `${tab.accentColor}22` : 'rgba(255,255,255,0.06)',
+                        color: activeTab === tab.key ? tab.accentColor : 'rgba(248,250,252,0.3)',
+                      }}
+                    >
+                      {getResultCount(tab.key)}
+                    </span>
+                    {activeTab === tab.key && (
+                      <span
+                        className="absolute bottom-0 left-0 right-0 h-0.5"
+                        style={{ background: tab.accentColor }}
+                      />
+                    )}
+                  </button>
+                ))}
               </div>
+
+              <UserList
+                title={activeTabConfig.title}
+                users={
+                  activeTab === 'dontFollowBack' ? result.dontFollowBack
+                  : activeTab === 'fans' ? result.fans
+                  : activeTab === 'mutuals' ? result.mutuals
+                  : result.lostFollowers || []
+                }
+                accentColor={activeTabConfig.accentColor}
+                onExport={() =>
+                  exportToCSV(
+                    activeTab === 'dontFollowBack' ? result.dontFollowBack
+                    : activeTab === 'fans' ? result.fans
+                    : activeTab === 'mutuals' ? result.mutuals
+                    : result.lostFollowers || [],
+                    activeTab
+                  )
+                }
+              />
             </div>
           </div>
         )}

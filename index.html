@@ -20,9 +20,49 @@
           },
           colors: {
             instagram: {
-              start: '#833AB4',
-              middle: '#FD1D1D',
-              end: '#FCB045'
+              start: '#405DE6',
+              middle: '#E1306C',
+              end: '#FFDC80'
+            },
+            slate: {
+              950: '#05060b',
+              900: '#090b11',
+              800: '#131824',
+              700: '#20283c',
+              600: '#2d3955',
+              500: '#405DE6',
+              400: '#f1f5f9',
+              300: '#f1f5f9',
+              200: '#f1f5f9',
+              100: '#ffffff',
+            },
+            purple: {
+              400: '#9b4fd1',
+              500: '#833AB4',
+              600: '#6b2c99',
+              700: '#501b78'
+            },
+            pink: {
+              400: '#e8568c',
+              500: '#E1306C',
+              600: '#bf2055',
+              700: '#9c1441'
+            },
+            indigo: {
+              300: '#899bf2',
+              500: '#405DE6',
+              600: '#2b45c2',
+              700: '#1c2f9e'
+            },
+            orange: {
+              400: '#f78f56',
+              500: '#F77737',
+              600: '#d65618'
+            },
+            yellow: {
+              400: '#ffebaa',
+              500: '#FFDC80',
+              600: '#e3bd5b'
             }
           }
         }
@@ -30,19 +70,49 @@
     }
   </script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #0f172a;
-      color: #f8fafc;
+      background-color: #090b11;
+      color: #f1f5f9;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+      background: rgba(225, 48, 108, 0.35);
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(64, 93, 230, 0.4);
+      border-radius: 99px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(64, 93, 230, 0.7);
     }
 
     .instagram-gradient {
-      background: linear-gradient(45deg, #833AB4, #FD1D1D, #FCB045);
+      background: linear-gradient(135deg, #405DE6, #5B51D8, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80);
     }
 
     .glass-panel {
-      background: rgba(30, 41, 59, 0.7);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(19, 24, 36, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     @keyframes slide-in-right {
@@ -50,7 +120,6 @@
         transform: translateX(20px);
         opacity: 0;
       }
-
       to {
         transform: translateX(0);
         opacity: 1;
@@ -59,10 +128,9 @@
 
     @keyframes fade-in-up {
       from {
-        transform: translateY(10px);
+        transform: translateY(16px);
         opacity: 0;
       }
-
       to {
         transform: translateY(0);
         opacity: 1;
@@ -70,25 +138,20 @@
     }
 
     @keyframes fade-in {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .animate-fade-in {
-      animation: fade-in 0.4s ease-out;
+      animation: fade-in 0.35s ease-out both;
     }
 
     .animate-slide-in-right {
-      animation: slide-in-right 0.4s ease-out;
+      animation: slide-in-right 0.35s ease-out both;
     }
 
     .animate-fade-in-up {
-      animation: fade-in-up 0.4s ease-out;
+      animation: fade-in-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     input,
@@ -100,8 +163,6 @@
   <script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
-    "react-markdown": "https://esm.sh/react-markdown@^10.1.0",
     "react/": "https://esm.sh/react@^19.2.4/",
     "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/"

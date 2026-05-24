@@ -7,10 +7,10 @@ export interface InstagramUser {
 export interface AnalysisResult {
   following: InstagramUser[];
   followers: InstagramUser[];
-  dontFollowBack: InstagramUser[]; // People I follow, but they don't follow me
-  fans: InstagramUser[]; // People who follow me, but I don't follow them
-  mutuals: InstagramUser[]; // Follow each other
-  lostFollowers?: InstagramUser[]; // People who were followers in the last scan but aren't now
+  dontFollowBack: InstagramUser[];
+  fans: InstagramUser[];
+  mutuals: InstagramUser[];
+  lostFollowers?: InstagramUser[];
 }
 
 export interface RawInstagramStringListData {
@@ -24,9 +24,8 @@ export interface RawInstagramItem {
   title?: string;
 }
 
-// Support for standard "Download Your Data" format from Instagram
 export interface StandardExportFormat {
   relationships_following?: RawInstagramItem[];
-  relationships_followers?: RawInstagramItem[]; // Sometimes it's just an array of items
+  relationships_followers?: RawInstagramItem[];
   [key: string]: any;
 }
