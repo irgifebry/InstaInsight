@@ -182,5 +182,5 @@ export const getScraperScript = () => {
 
 export const getBookmarkletHref = () => {
   const script = getScraperScript();
-  return `javascript:(function(){${encodeURIComponent(script)}})();`;
+  return `javascript:${encodeURIComponent(script)}`;
 };
