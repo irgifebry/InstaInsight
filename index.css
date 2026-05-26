@@ -1,3 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Space Grotesk', 'system-ui', 'sans-serif';
+  
+  --color-neo-bg: #090b11;
+  --color-neo-surface: #131824;
+  --color-neo-elevated: #1e293b;
+  --color-neo-text: #f8fafc;
+  --color-neo-muted: #94a3b8;
+  --color-neo-accent: #e2e8f0;
+
+  --shadow-neo: 4px 4px 0 0 #000;
+  --shadow-neo-lg: 6px 6px 0 0 #000;
+  --shadow-neo-sm: 3px 3px 0 0 #000;
+}
+
 :root {
   --neo-bg: #090b11;
   --neo-surface: #131824;
