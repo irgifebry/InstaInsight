@@ -184,16 +184,15 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             }
         };
     }, [processData]);
-
     const copyScript = async () => {
         try {
-            await navigator.clipboard.writeText(getScraperScript());
+            const codeToCopy = activeMethod === 'mobile' ? getBookmarkletHref() : getScraperScript();
+            await navigator.clipboard.writeText(codeToCopy);
             setCopyFeedback(true);
             setTimeout(() => setCopyFeedback(false), 2000);
             return true;
         } catch (e) { return false; }
     };
-
     const handleInteractionStart = async () => {
         const copied = await copyScript();
         if (copied) {
