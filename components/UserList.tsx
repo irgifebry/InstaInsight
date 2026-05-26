@@ -20,7 +20,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, onExport }) =>
   };
 
   return (
-    <div className="flex flex-col w-full" style={{ background: '#131824', height: '580px' }}>
+    <div className="flex flex-col" style={{ background: '#131824', height: '580px' }}>
       <div className="p-5" style={{ borderBottom: '3px solid #f8fafc' }}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
@@ -56,7 +56,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, onExport }) =>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-5 w-full" style={{ background: '#090b11', scrollbarGutter: 'stable' }}>
+      <div className="flex-1 overflow-y-auto p-5" style={{ background: '#090b11', scrollbarGutter: 'stable' }}>
         {filteredUsers.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-400">
             <Frown size={44} strokeWidth={2} />

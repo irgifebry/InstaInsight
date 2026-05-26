@@ -184,7 +184,7 @@ const App: React.FC = () => {
         )}
 
         {step === 'analysis' && result && (
-          <div className="animate-fade-in">
+          <div className="animate-fade-in flex flex-col w-full">
             {previousScanDate && (
               <div
                 className="inline-flex items-center gap-2 mb-6 text-xs font-bold px-3 py-1.5"
@@ -216,7 +216,7 @@ const App: React.FC = () => {
             </div>
 
             <div
-              className="overflow-hidden w-full"
+              className="overflow-hidden"
               style={{
                 border: '3px solid #f8fafc',
                 boxShadow: '6px 6px 0 #000000',
