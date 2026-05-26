@@ -216,7 +216,7 @@ const App: React.FC = () => {
             </div>
 
             <div
-              className="overflow-hidden"
+              className="overflow-hidden w-full"
               style={{
                 border: '3px solid #f8fafc',
                 boxShadow: '6px 6px 0 #000000',
