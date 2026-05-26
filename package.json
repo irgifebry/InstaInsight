@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && npx gh-pages -d dist"
+    "build:pages": "npm run build && node -e \"const fs=require('fs');fs.rmSync('docs',{recursive:true,force:true});fs.cpSync('dist','docs',{recursive:true});\"",
+    "deploy": "npm run build:pages && npx gh-pages -d dist"
   },
   "dependencies": {
     "lucide-react": "^1.16.0",
