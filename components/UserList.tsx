@@ -63,11 +63,11 @@ export const UserList: React.FC<UserListProps> = ({ users, title, onExport }) =>
             <p className="text-sm font-black uppercase">No users found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
             {filteredUsers.map((user, idx) => (
               <div
                 key={`${user.username}-${idx}`}
-                className="flex items-center justify-between p-3 group cursor-pointer transition-all duration-100 hover:translate-x-[-1px] hover:translate-y-[-1px]"
+                className="flex items-center justify-between p-3 group cursor-pointer transition-all duration-100 hover:translate-x-[-1px] hover:translate-y-[-1px] min-w-0"
                 style={{
                   background: '#131824',
                   border: '2px solid #f8fafc',
