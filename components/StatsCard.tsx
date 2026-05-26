@@ -21,7 +21,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
     <div
       id={`stats-card-${title.toLowerCase().replace(/\s+/g, '-')}`}
       onClick={onClick}
-      className={`relative p-5 cursor-pointer transition-all duration-150
+      className={`relative p-5 cursor-pointer transition-all duration-150 h-full flex flex-col justify-between
         ${isActive ? 'translate-x-[-2px] translate-y-[-2px]' : 'hover:translate-x-[-1px] hover:translate-y-[-1px]'}
       `}
       style={{
