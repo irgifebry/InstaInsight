@@ -56,7 +56,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, onExport }) =>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3" style={{ background: '#090b11' }}>
+      <div className="flex-1 overflow-y-auto p-5" style={{ background: '#090b11' }}>
         {filteredUsers.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-400">
             <Frown size={44} strokeWidth={2} />
