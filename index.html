@@ -6,64 +6,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>InstaInsight - Unfollower Analyzer</title>
   <link rel="manifest" href="/site.webmanifest">
-  <meta name="theme-color" content="#833AB4">
+  <link rel="icon" href="https://img.icons8.com/gradient/48/instagram-new.png">
+  <meta name="theme-color" content="#090b11">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif']
+            sans: ['Space Grotesk', 'system-ui', 'sans-serif']
           },
           colors: {
-            instagram: {
-              start: '#405DE6',
-              middle: '#E1306C',
-              end: '#FFDC80'
-            },
-            slate: {
-              950: '#05060b',
-              900: '#090b11',
-              800: '#131824',
-              700: '#20283c',
-              600: '#2d3955',
-              500: '#405DE6',
-              400: '#f1f5f9',
-              300: '#f1f5f9',
-              200: '#f1f5f9',
-              100: '#ffffff',
-            },
-            purple: {
-              400: '#9b4fd1',
-              500: '#833AB4',
-              600: '#6b2c99',
-              700: '#501b78'
-            },
-            pink: {
-              400: '#e8568c',
-              500: '#E1306C',
-              600: '#bf2055',
-              700: '#9c1441'
-            },
-            indigo: {
-              300: '#899bf2',
-              500: '#405DE6',
-              600: '#2b45c2',
-              700: '#1c2f9e'
-            },
-            orange: {
-              400: '#f78f56',
-              500: '#F77737',
-              600: '#d65618'
-            },
-            yellow: {
-              400: '#ffebaa',
-              500: '#FFDC80',
-              600: '#e3bd5b'
+            neo: {
+              bg: '#090b11',
+              surface: '#131824',
+              elevated: '#1e293b',
+              text: '#f8fafc',
+              muted: '#94a3b8',
+              accent: '#e2e8f0',
             }
+          },
+          boxShadow: {
+            neo: '4px 4px 0 0 #000',
+            'neo-lg': '6px 6px 0 0 #000',
+            'neo-sm': '3px 3px 0 0 #000',
           }
         }
       }
@@ -76,43 +46,46 @@
 
     body {
       background-color: #090b11;
-      color: #f1f5f9;
+      color: #f8fafc;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
     ::selection {
-      background: rgba(225, 48, 108, 0.35);
-      color: #fff;
+      background: #e2e8f0;
+      color: #090b11;
     }
 
     ::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
+      width: 8px;
+      height: 8px;
     }
 
     ::-webkit-scrollbar-track {
-      background: transparent;
+      background: #090b11;
+      border-left: 2px solid #f8fafc;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(64, 93, 230, 0.4);
-      border-radius: 99px;
+      background: #f8fafc;
+      border: 2px solid #f8fafc;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(64, 93, 230, 0.7);
+      background: #94a3b8;
     }
 
-    .instagram-gradient {
-      background: linear-gradient(135deg, #405DE6, #5B51D8, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80);
+    .neo-panel {
+      background: #131824;
+      border: 3px solid #f8fafc;
+      box-shadow: 6px 6px 0 #000000;
     }
 
-    .glass-panel {
-      background: rgba(19, 24, 36, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+    .neo-badge {
+      background: #1e293b;
+      border: 2px solid #f8fafc;
+      box-shadow: 2px 2px 0 #000000;
+      color: #f8fafc;
     }
 
     @keyframes slide-in-right {
@@ -160,16 +133,6 @@
       touch-action: manipulation;
     }
   </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
-  }
-}
-</script>
-  <link rel="stylesheet" href="/index.css">
 </head>
 
 <body>

@@ -13,45 +13,30 @@ const TABS: {
   label: string;
   title: string;
   icon: React.ReactNode;
-  gradientFrom: string;
-  gradientTo: string;
-  accentColor: string;
 }[] = [
   {
     key: 'dontFollowBack',
     label: 'Not Following Back',
     title: 'Ghosted — they are not following you back',
-    icon: <UserX size={20} color="white" strokeWidth={2} />,
-    gradientFrom: '#E1306C',
-    gradientTo: '#C13584',
-    accentColor: '#E1306C',
+    icon: <UserX size={20} color="#f8fafc" strokeWidth={2.5} />,
   },
   {
     key: 'fans',
     label: 'Secret Fans',
     title: "Secret fans — you haven't followed them back",
-    icon: <UserCheck size={20} color="white" strokeWidth={2} />,
-    gradientFrom: '#405DE6',
-    gradientTo: '#5B51D8',
-    accentColor: '#405DE6',
+    icon: <UserCheck size={20} color="#f8fafc" strokeWidth={2.5} />,
   },
   {
     key: 'mutuals',
     label: 'Mutual Friends',
     title: 'Mutual friends — following each other',
-    icon: <Users size={20} color="white" strokeWidth={2} />,
-    gradientFrom: '#FCAF45',
-    gradientTo: '#F77737',
-    accentColor: '#FCAF45',
+    icon: <Users size={20} color="#f8fafc" strokeWidth={2.5} />,
   },
   {
     key: 'lostFollowers',
     label: 'Recently Unfollowed',
     title: 'Recently unfollowed you since last scan',
-    icon: <UserMinus size={20} color="white" strokeWidth={2} />,
-    gradientFrom: '#FD1D1D',
-    gradientTo: '#F56040',
-    accentColor: '#FD1D1D',
+    icon: <UserMinus size={20} color="#f8fafc" strokeWidth={2.5} />,
   },
 ];
 
@@ -128,33 +113,42 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen font-sans" style={{ background: '#090b11' }}>
       <nav
-        className="sticky top-0 z-50 backdrop-blur-xl"
-        style={{ background: 'rgba(9,11,17,0.9)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}
+        className="sticky top-0 z-50"
+        style={{
+          background: '#131824',
+          borderBottom: '3px solid #f8fafc',
+          boxShadow: '0 4px 0 #000000',
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <div
-                className="h-8 w-8 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #405DE6, #833AB4, #E1306C, #F77737, #FFDC80)' }}
+                className="h-10 w-10 flex items-center justify-center"
+                style={{
+                  background: '#1e293b',
+                  border: '3px solid #f8fafc',
+                  boxShadow: '3px 3px 0 #000000',
+                }}
               >
-                <Activity size={16} color="white" strokeWidth={2.5} />
+                <Activity size={18} color="#f8fafc" strokeWidth={2.5} />
               </div>
-              <span className="font-black text-white tracking-tight text-lg">InstaInsight</span>
+              <span className="font-black text-slate-50 tracking-tight text-xl uppercase">
+                InstaInsight
+              </span>
             </div>
 
             {step === 'analysis' && (
               <button
                 id="rescan-btn"
                 onClick={reset}
-                className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl transition-all active:scale-95"
+                className="neo-btn flex items-center gap-1.5 text-xs font-black px-4 py-2 uppercase tracking-wide"
                 style={{
-                  background: 'rgba(255,255,255,0.07)',
-                  color: 'rgba(248,250,252,0.7)',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  background: '#090b11',
+                  color: '#f8fafc',
                 }}
               >
-                <RefreshCw size={12} strokeWidth={2.5} />
+                <RefreshCw size={14} strokeWidth={2.5} />
                 Rescan
               </button>
             )}
@@ -166,24 +160,17 @@ const App: React.FC = () => {
         {step === 'upload' && (
           <div className="max-w-4xl mx-auto animate-fade-in-up">
             <div className="text-center mb-10">
-              <div
-                className="inline-block text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6"
-                style={{ background: 'rgba(64,93,230,0.18)', color: '#405DE6', border: '1px solid rgba(64,93,230,0.3)' }}
-              >
+              <div className="neo-badge inline-block text-xs font-black uppercase tracking-widest px-4 py-2 mb-6">
                 No password needed
               </div>
-              <h1
-                className="text-5xl sm:text-6xl font-black tracking-tight mb-4 leading-none"
-                style={{
-                  background: 'linear-gradient(135deg, #405DE6, #833AB4, #E1306C, #F77737, #FFDC80)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                }}
-              >
-                Know Your<br />Followers
+              <h1 className="text-5xl sm:text-6xl font-black tracking-tight mb-4 leading-none text-slate-50 uppercase">
+                Know Your
+                <br />
+                <span style={{ background: '#1e293b', padding: '0 0.15em', border: '3px solid #f8fafc', boxShadow: '4px 4px 0 #000', display: 'inline-block', marginTop: '0.15em' }}>
+                  Followers
+                </span>
               </h1>
-              <p className="text-base max-w-lg mx-auto leading-relaxed" style={{ color: 'rgba(248,250,252,0.5)' }}>
+              <p className="text-base max-w-lg mx-auto leading-relaxed font-medium text-slate-300">
                 Find who ghosted you, your secret fans, mutual friends, and recent unfollowers — all locally and privately.
               </p>
             </div>
@@ -204,21 +191,27 @@ const App: React.FC = () => {
         {step === 'analysis' && result && (
           <div className="animate-fade-in">
             {previousScanDate && (
-              <div className="flex items-center gap-2 mb-6 text-xs" style={{ color: 'rgba(248,250,252,0.35)' }}>
-                <Activity size={12} strokeWidth={2} />
+              <div
+                className="inline-flex items-center gap-2 mb-6 text-xs font-bold px-3 py-1.5"
+                style={{
+                  background: '#131824',
+                  border: '2px solid #f8fafc',
+                  boxShadow: '2px 2px 0 #000',
+                  color: '#f8fafc',
+                }}
+              >
+                <Activity size={12} strokeWidth={2.5} />
                 Last scan: {new Date(previousScanDate).toLocaleString()}
               </div>
             )}
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {TABS.map(tab => (
                 <StatsCard
                   key={tab.key}
                   title={tab.label}
                   count={getResultCount(tab.key)}
                   icon={tab.icon}
-                  gradientFrom={tab.gradientFrom}
-                  gradientTo={tab.gradientTo}
                   isActive={activeTab === tab.key}
                   onClick={() => setActiveTab(tab.key)}
                 />
@@ -226,40 +219,44 @@ const App: React.FC = () => {
             </div>
 
             <div
-              className="rounded-2xl overflow-hidden"
-              style={{ border: '1px solid rgba(255,255,255,0.06)' }}
+              className="overflow-hidden"
+              style={{
+                border: '3px solid #f8fafc',
+                boxShadow: '6px 6px 0 #000000',
+                background: '#131824',
+              }}
             >
               <div
                 className="flex gap-0 overflow-x-auto"
-                style={{ background: 'rgba(19,24,36,0.95)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+                style={{
+                  background: '#131824',
+                  borderBottom: '3px solid #f8fafc',
+                }}
               >
                 {TABS.map(tab => (
                   <button
                     key={tab.key}
                     id={`tab-${tab.key}`}
                     onClick={() => setActiveTab(tab.key)}
-                    className="flex items-center gap-2 px-5 py-3.5 text-sm font-bold whitespace-nowrap transition-all relative"
+                    className="flex items-center gap-2 px-5 py-4 text-sm font-black whitespace-nowrap transition-all uppercase tracking-wide"
                     style={{
-                      color: activeTab === tab.key ? tab.accentColor : 'rgba(248,250,252,0.4)',
-                      background: 'transparent',
+                      color: activeTab === tab.key ? '#090b11' : '#f8fafc',
+                      background: activeTab === tab.key ? '#e2e8f0' : '#131824',
+                      borderRight: '3px solid #f8fafc',
                     }}
                   >
                     {tab.label}
                     <span
-                      className="text-xs px-2 py-0.5 rounded-full font-black"
+                      className="text-xs px-2 py-0.5 font-black"
                       style={{
-                        background: activeTab === tab.key ? `${tab.accentColor}22` : 'rgba(255,255,255,0.06)',
-                        color: activeTab === tab.key ? tab.accentColor : 'rgba(248,250,252,0.3)',
+                        background: activeTab === tab.key ? '#131824' : '#1e293b',
+                        color: activeTab === tab.key ? '#e2e8f0' : '#f8fafc',
+                        border: '2px solid #f8fafc',
+                        boxShadow: activeTab === tab.key ? '2px 2px 0 #000' : 'none',
                       }}
                     >
                       {getResultCount(tab.key)}
                     </span>
-                    {activeTab === tab.key && (
-                      <span
-                        className="absolute bottom-0 left-0 right-0 h-0.5"
-                        style={{ background: tab.accentColor }}
-                      />
-                    )}
                   </button>
                 ))}
               </div>
@@ -272,7 +269,6 @@ const App: React.FC = () => {
                   : activeTab === 'mutuals' ? result.mutuals
                   : result.lostFollowers || []
                 }
-                accentColor={activeTabConfig.accentColor}
                 onExport={() =>
                   exportToCSV(
                     activeTab === 'dontFollowBack' ? result.dontFollowBack

@@ -1,0 +1,60 @@
+:root {
+  --neo-bg: #090b11;
+  --neo-surface: #131824;
+  --neo-elevated: #1e293b;
+  --neo-text: #f8fafc;
+  --neo-muted: #94a3b8;
+  --neo-accent: #e2e8f0;
+  --neo-border: 3px solid #f8fafc;
+  --neo-shadow: 4px 4px 0 #000000;
+  --neo-shadow-lg: 6px 6px 0 #000000;
+  --neo-shadow-sm: 3px 3px 0 #000000;
+}
+
+.neo-card {
+  background: var(--neo-surface);
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow);
+}
+
+.neo-card-lg {
+  background: var(--neo-surface);
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow-lg);
+}
+
+.neo-btn {
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow-sm);
+  font-weight: 800;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  color: var(--neo-text);
+  background: var(--neo-elevated);
+}
+
+.neo-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--neo-shadow);
+}
+
+.neo-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.neo-btn-primary {
+  background: var(--neo-accent);
+  color: var(--neo-bg);
+}
+
+.neo-input {
+  border: var(--neo-border);
+  box-shadow: var(--neo-shadow-sm);
+  background: var(--neo-bg);
+  color: var(--neo-text);
+}
+
+.neo-input:focus {
+  outline: none;
+  box-shadow: var(--neo-shadow);
+}

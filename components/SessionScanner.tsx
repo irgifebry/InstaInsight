@@ -10,7 +10,9 @@ import {
   Zap,
   Clock,
   CheckCircle,
-  Loader2
+  Loader2,
+  Monitor,
+  Smartphone,
 } from 'lucide-react';
 import { getScraperScript, getBookmarkletHref } from '../utils/browserScript';
 import { InstagramUser } from '../types';
@@ -22,8 +24,23 @@ interface SessionScannerProps {
     onDataLoaded: (following: InstagramUser[], followers: InstagramUser[]) => void;
 }
 
+const neoBtn = 'neo-btn font-black uppercase tracking-wide transition-all';
+const neoCard = 'border-[3px] border-slate-50 bg-slate-900';
+const neoShadow = { boxShadow: '4px 4px 0 #000000' };
+const neoShadowLg = { boxShadow: '6px 6px 0 #000000' };
+
+type ScanMethod = 'desktop' | 'mobile';
+
+const detectMobile = () => {
+    const ua = navigator.userAgent;
+    const mobileUa = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const narrowScreen = window.matchMedia('(max-width: 768px)').matches;
+    return mobileUa || (coarsePointer && narrowScreen);
+};
+
 export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) => {
-    const [deviceType, setDeviceType] = useState<'desktop' | 'mobile' | 'extension'>('desktop');
+    const [activeMethod, setActiveMethod] = useState<ScanMethod>('desktop');
     const [scanState, setScanState] = useState<'idle' | 'waiting' | 'processing' | 'success'>('idle');
     const [mobileStep, setMobileStep] = useState(1);
     const [manualJson, setManualJson] = useState('');
@@ -37,20 +54,15 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     const instagramUrl = `https://www.instagram.com/?t=${Date.now()}`;
 
     useEffect(() => {
-        if (isExtension) {
-            setDeviceType('extension');
-        } else if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            setDeviceType('mobile');
-        } else {
-            setDeviceType('desktop');
-        }
+        if (isExtension) return;
+        setActiveMethod(detectMobile() ? 'mobile' : 'desktop');
     }, [isExtension]);
 
     useEffect(() => {
         if (bookmarkletRef.current) {
             bookmarkletRef.current.href = getBookmarkletHref();
         }
-    }, [deviceType]);
+    }, [activeMethod]);
 
     const processData = useCallback((followers: any, following: any) => {
         if (processingRef.current) return;
@@ -189,7 +201,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     };
 
     const handleDirectClick = (e: React.MouseEvent) => {
-        if (deviceType === 'mobile' && !isExtension) {
+        if (activeMethod === 'mobile' && !isExtension) {
             e.preventDefault();
             alert('Do not click directly!\n\nTo avoid opening the Instagram app:\n1. Press & Hold this button.\n2. Select "Open in New Tab".\n\nThe script will be automatically copied when you press the button.');
         }
@@ -206,48 +218,95 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     return (
         <div className="max-w-4xl mx-auto">
             <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center p-3 bg-gradient-to-tr from-purple-600 to-orange-500 rounded-2xl shadow-lg mb-4">
-                    <Camera size={32} color="white" strokeWidth={1.5} />
+                <div
+                    className="inline-flex items-center justify-center p-4 mb-4"
+                    style={{ background: '#1e293b', border: '3px solid #f8fafc', ...neoShadowLg }}
+                >
+                    <Camera size={32} color="#f8fafc" strokeWidth={2} />
                 </div>
-                <h2 className="text-2xl font-bold text-white">Connect Your IG Here</h2>
+                <h2 className="text-2xl font-black text-slate-50 uppercase tracking-tight">
+                    Connect Your IG Here
+                </h2>
             </div>
 
-            <div className="glass-panel p-6 rounded-2xl shadow-2xl border border-slate-700 relative overflow-hidden min-h-[400px]">
+            <div
+                className={`${neoCard} p-6 relative overflow-hidden min-h-[400px]`}
+                style={neoShadowLg}
+            >
 
                 {scanState === 'idle' && (
                     <div className="text-center h-full flex flex-col">
 
+                        {!isExtension && (
+                            <div className="flex gap-3 mb-6 justify-center w-full max-w-sm sm:max-w-md mx-auto px-1">
+                                <button
+                                    type="button"
+                                    id="method-desktop-btn"
+                                    onClick={() => setActiveMethod('desktop')}
+                                    className={`${neoBtn} flex-1 flex items-center justify-center gap-2 py-3 px-5 sm:px-8 text-xs sm:text-sm whitespace-nowrap ${activeMethod === 'desktop' ? 'neo-btn-primary' : ''}`}
+                                >
+                                    <Monitor size={16} strokeWidth={2.5} />
+                                    Desktop
+                                </button>
+                                <button
+                                    type="button"
+                                    id="method-mobile-btn"
+                                    onClick={() => setActiveMethod('mobile')}
+                                    className={`${neoBtn} flex-1 flex items-center justify-center gap-2 py-3 px-5 sm:px-8 text-xs sm:text-sm whitespace-nowrap ${activeMethod === 'mobile' ? 'neo-btn-primary' : ''}`}
+                                >
+                                    <Smartphone size={16} strokeWidth={2.5} />
+                                    Mobile
+                                </button>
+                            </div>
+                        )}
+
                         {isExtension && (
-                            <button onClick={startExtensionProcess} className="w-full max-w-sm py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg transition-all transform hover:-translate-y-1">
+                            <button
+                                onClick={startExtensionProcess}
+                                className={`${neoBtn} neo-btn-primary w-full max-w-sm py-4`}
+                            >
                                 1. Start Scan
                             </button>
                         )}
 
-                        {deviceType === 'desktop' && !isExtension && (
+                        {activeMethod === 'desktop' && !isExtension && (
                             <div className="animate-fade-in text-left">
-                                <p className="text-slate-300 mb-6 text-center max-w-lg mx-auto text-sm">
+                                <p className="text-slate-300 mb-6 text-center max-w-lg mx-auto text-sm font-medium">
                                     Choose the method that works best for you. Don't worry, no password needed!
                                 </p>
 
                                 <div className="flex justify-center mb-8">
-                                    <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-600 hover:border-slate-500 transition-colors group max-w-sm w-full mx-auto">
+                                    <div
+                                        className={`${neoCard} p-5 max-w-sm w-full mx-auto`}
+                                        style={neoShadow}
+                                    >
                                         <div className="flex items-center gap-2 mb-3">
-                                            <span className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">1</span>
-                                            <h3 className="font-bold text-white text-sm">Use Bookmark</h3>
+                                            <span
+                                                className="flex items-center justify-center w-7 h-7 text-slate-50 text-xs font-black"
+                                                style={{ background: '#1e293b', border: '2px solid #f8fafc', boxShadow: '2px 2px 0 #000' }}
+                                            >
+                                                1
+                                            </span>
+                                            <h3 className="font-black text-slate-50 text-sm uppercase">Use Bookmark</h3>
                                         </div>
-                                        <p className="text-xs text-slate-400 mb-4 h-8 leading-4">
-                                            Drag the purple button below to your <b>Bookmarks Bar</b>.
+                                        <p className="text-xs text-slate-300 mb-4 h-8 leading-4 font-medium">
+                                            Drag the button below to your <b>Bookmarks Bar</b>.
                                         </p>
                                         <a
                                             ref={bookmarkletRef}
                                             onClick={(e) => e.preventDefault()}
-                                            className="flex items-center justify-center gap-2 w-full py-3 bg-slate-700 group-hover:bg-slate-600 border border-slate-500 border-dashed rounded-lg text-indigo-300 font-bold cursor-grab active:cursor-grabbing transition-colors"
+                                            className="flex items-center justify-center gap-2 w-full py-3 font-black cursor-grab active:cursor-grabbing text-slate-50"
+                                            style={{
+                                                background: '#1e293b',
+                                                border: '3px dashed #f8fafc',
+                                                boxShadow: '3px 3px 0 #000',
+                                            }}
                                             title="Drag me to your bookmarks bar!"
                                         >
-                                            <Bookmark size={16} strokeWidth={2} />
+                                            <Bookmark size={16} strokeWidth={2.5} />
                                             <span>Scan IG Followers</span>
                                         </a>
-                                        <p className="text-[10px] text-slate-500 mt-2 italic text-center">
+                                        <p className="text-[10px] text-slate-400 mt-2 font-bold text-center">
                                             After dragging it up, open <b>Instagram.com</b> and click the bookmark.
                                         </p>
                                     </div>
@@ -256,20 +315,28 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 <div className="flex flex-col items-center">
                                     <button
                                         onClick={() => setScanState('waiting')}
-                                        className="px-8 py-3 bg-slate-800 hover:bg-slate-700 border border-green-500/50 hover:border-green-500 text-green-400 font-bold rounded-xl transition-all shadow-lg hover:shadow-green-900/20 flex items-center gap-2"
+                                        className={`${neoBtn} neo-btn-primary px-8 py-3 flex items-center gap-2`}
                                     >
                                         Proceed to Next Step
-                                        <ArrowRight size={16} strokeWidth={2} />
+                                        <ArrowRight size={16} strokeWidth={2.5} />
                                     </button>
                                 </div>
                             </div>
                         )}
 
-                        {deviceType === 'mobile' && !isExtension && (
+                        {activeMethod === 'mobile' && !isExtension && (
                             <div className="flex-1 flex flex-col justify-between">
                                 <div className="flex justify-center gap-2 mb-8">
                                     {[1, 2, 3].map(s => (
-                                        <div key={s} className={`h-1.5 w-12 rounded-full transition-all duration-500 ${mobileStep >= s ? 'bg-purple-500' : 'bg-slate-700'}`}></div>
+                                        <div
+                                            key={s}
+                                            className="h-2 w-12 transition-all duration-300"
+                                            style={{
+                                                background: mobileStep >= s ? '#e2e8f0' : '#090b11',
+                                                border: '2px solid #f8fafc',
+                                                boxShadow: mobileStep >= s ? '2px 2px 0 #000' : 'none',
+                                            }}
+                                        />
                                     ))}
                                 </div>
 
@@ -277,21 +344,23 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     {mobileStep === 1 && (
                                         <div className="text-center w-full">
                                             <div className="flex justify-center mb-4">
-                                                <Copy size={40} color="#a78bfa" strokeWidth={1.5} />
+                                                <Copy size={40} color="#f8fafc" strokeWidth={2} />
                                             </div>
-                                            <h3 className="text-xl font-black text-white mb-2 italic">STEP 1: GET THE KEY</h3>
-                                            <p className="text-slate-400 text-sm mb-6 px-4">
+                                            <h3 className="text-xl font-black text-slate-50 mb-2 uppercase">Step 1: Get The Key</h3>
+                                            <p className="text-slate-300 text-sm mb-6 px-4 font-medium">
                                                 Press and hold the button below to copy the secret script.
                                             </p>
                                             <button
                                                 onTouchStart={handleInteractionStart}
                                                 onContextMenu={handleInteractionStart}
-                                                className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-purple-900/40 text-lg active:scale-95 transition-transform"
+                                                className={`${neoBtn} neo-btn-primary w-full py-5 text-lg`}
                                             >
-                                                PRESS & HOLD TO COPY
+                                                Press & Hold To Copy
                                             </button>
                                             {copyFeedback && (
-                                                <p className="mt-3 text-green-400 font-bold animate-bounce text-sm">COPIED! TAP NEXT.</p>
+                                                <p className="mt-3 text-slate-50 font-black animate-bounce text-sm uppercase">
+                                                    Copied! Tap Next.
+                                                </p>
                                             )}
                                         </div>
                                     )}
@@ -299,30 +368,33 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     {mobileStep === 2 && (
                                         <div className="text-center w-full animate-slide-in-right">
                                             <div className="flex justify-center mb-4">
-                                                <Zap size={40} color="#a78bfa" strokeWidth={1.5} />
+                                                <Zap size={40} color="#f8fafc" strokeWidth={2} />
                                             </div>
-                                            <h3 className="text-xl font-black text-white mb-2 italic uppercase">Step 2: The Ninja Trick</h3>
-                                            <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-600 text-left mb-6">
-                                                <p className="text-sm text-white mb-4 leading-relaxed">
+                                            <h3 className="text-xl font-black text-slate-50 mb-2 uppercase">Step 2: The Ninja Trick</h3>
+                                            <div
+                                                className={`${neoCard} p-5 text-left mb-6`}
+                                                style={{ background: '#090b11', ...neoShadow }}
+                                            >
+                                                <p className="text-sm text-slate-50 mb-4 leading-relaxed font-medium">
                                                     To bypass restrictions, follow this carefully:
                                                 </p>
-                                                <ul className="space-y-3 text-xs text-slate-300">
+                                                <ul className="space-y-3 text-xs text-slate-300 font-medium">
                                                     <li className="flex gap-2">
-                                                        <span className="text-purple-400 font-bold">1.</span>
-                                                        <span>Hold the button below & select <b className="text-white">"Open in New Tab"</b>.</span>
+                                                        <span className="font-black text-slate-50">1.</span>
+                                                        <span>Hold the button below & select <b>"Open in New Tab"</b>.</span>
                                                     </li>
                                                     <li className="flex gap-2">
-                                                        <span className="text-purple-400 font-bold">2.</span>
-                                                        <span>In the new tab, type <code className="bg-slate-900 px-1 rounded text-pink-400 font-mono">javascript:</code> then paste.</span>
+                                                        <span className="font-black text-slate-50">2.</span>
+                                                        <span>In the new tab, type <code className="bg-slate-900 px-1 font-mono font-bold border border-slate-50">javascript:</code> then paste.</span>
                                                     </li>
                                                 </ul>
                                             </div>
                                             <a
                                                 href={instagramUrl}
                                                 onClick={handleDirectClick}
-                                                className="block w-full py-5 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-900/40 text-lg no-underline text-center"
+                                                className={`${neoBtn} neo-btn-primary block w-full py-5 text-lg no-underline text-center`}
                                             >
-                                                GO TO INSTAGRAM TAB
+                                                Go To Instagram Tab
                                             </a>
                                         </div>
                                     )}
@@ -330,39 +402,39 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                     {mobileStep === 3 && (
                                         <div className="text-center w-full animate-slide-in-right">
                                             <div className="flex justify-center mb-4">
-                                                <Clock size={40} color="#a78bfa" strokeWidth={1.5} />
+                                                <Clock size={40} color="#f8fafc" strokeWidth={2} />
                                             </div>
-                                            <h3 className="text-xl font-black text-white mb-2 italic uppercase">Step 3: Finish Scaling</h3>
-                                            <p className="text-slate-400 text-sm mb-6 px-4">
+                                            <h3 className="text-xl font-black text-slate-50 mb-2 uppercase">Step 3: Finish Scaling</h3>
+                                            <p className="text-slate-300 text-sm mb-6 px-4 font-medium">
                                                 Is the script done? If yes, click below!
                                             </p>
                                             <button
                                                 onClick={() => setScanState('waiting')}
-                                                className="w-full py-5 bg-green-600 text-white font-black rounded-2xl shadow-xl shadow-green-900/40 text-lg"
+                                                className={`${neoBtn} neo-btn-primary w-full py-5 text-lg`}
                                             >
-                                                SCAN COMPLETED!
+                                                Scan Completed!
                                             </button>
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="flex justify-between items-center mt-10 pt-4 border-t border-slate-800">
+                                <div className="flex justify-between items-center mt-10 pt-4" style={{ borderTop: '3px solid #f8fafc' }}>
                                     <button
                                         disabled={mobileStep === 1}
                                         onClick={() => setMobileStep(s => s - 1)}
-                                        className={`text-sm font-bold flex items-center gap-1 ${mobileStep === 1 ? 'text-slate-600' : 'text-slate-400 hover:text-white'}`}
+                                        className={`text-sm font-black flex items-center gap-1 uppercase ${mobileStep === 1 ? 'text-slate-600' : 'text-slate-50 hover:underline'}`}
                                     >
-                                        <ChevronLeft size={16} strokeWidth={2} />
+                                        <ChevronLeft size={16} strokeWidth={2.5} />
                                         Back
                                     </button>
 
                                     {mobileStep < 3 && (
                                         <button
                                             onClick={() => setMobileStep(s => s + 1)}
-                                            className="px-6 py-2 bg-slate-800 text-purple-400 font-bold rounded-lg text-sm border border-purple-900/50 flex items-center gap-1"
+                                            className={`${neoBtn} neo-btn-primary px-6 py-2 text-sm flex items-center gap-1`}
                                         >
                                             Next
-                                            <ChevronRight size={16} strokeWidth={2} />
+                                            <ChevronRight size={16} strokeWidth={2.5} />
                                         </button>
                                     )}
                                 </div>
@@ -374,31 +446,42 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                 {scanState === 'waiting' && (
                     <div className="animate-fade-in">
                         <div className="text-center mb-6">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-900/30 rounded-full border border-blue-500/30 text-blue-200 text-sm animate-pulse">
-                                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                            <div
+                                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-black uppercase animate-pulse text-slate-50"
+                                style={{ background: '#1e293b', border: '3px solid #f8fafc', boxShadow: '3px 3px 0 #000' }}
+                            >
+                                <div className="w-2.5 h-2.5 bg-slate-50" />
                                 Waiting for data sync...
                             </div>
                         </div>
 
-                        <div className="bg-slate-800 p-5 rounded-xl border border-slate-600 shadow-inner">
-                            <label className="block text-sm font-bold text-white mb-4 text-center">
+                        <div
+                            className={`${neoCard} p-5`}
+                            style={{ background: '#090b11', ...neoShadow }}
+                        >
+                            <label className="block text-sm font-black text-slate-50 mb-4 text-center uppercase">
                                 Script already running?
                             </label>
 
                             <button
                                 onClick={handlePasteFromClipboard}
-                                className="w-full py-4 mb-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
+                                className={`${neoBtn} neo-btn-primary w-full py-4 mb-4 flex items-center justify-center gap-2`}
                             >
-                                <ClipboardPaste size={20} strokeWidth={2} />
+                                <ClipboardPaste size={20} strokeWidth={2.5} />
                                 Auto Paste Results
                             </button>
 
                             <div className="relative mb-3">
                                 <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-slate-600"></div>
+                                    <div className="w-full" style={{ borderTop: '2px solid #f8fafc' }} />
                                 </div>
                                 <div className="relative flex justify-center text-xs">
-                                    <span className="px-2 bg-slate-800 text-slate-400">Or Paste Manually</span>
+                                    <span
+                                        className="px-2 font-black uppercase text-slate-300"
+                                        style={{ background: '#090b11' }}
+                                    >
+                                        Or Paste Manually
+                                    </span>
                                 </div>
                             </div>
 
@@ -407,19 +490,19 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                 value={manualJson}
                                 onChange={handleManualInput}
                                 placeholder="Paste the JSON result here..."
-                                className="w-full h-24 bg-slate-900 border border-slate-700 rounded-lg p-3 text-[10px] text-slate-300 focus:outline-none focus:border-purple-500 font-mono transition-colors"
+                                className="neo-input w-full h-24 p-3 text-[10px] text-slate-50 font-mono"
                             />
 
                             <div className="flex gap-3 mt-3">
                                 <button
                                     onClick={() => setScanState('idle')}
-                                    className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-sm transition-colors"
+                                    className={`${neoBtn} flex-1 py-3 text-sm`}
                                 >
                                     Back
                                 </button>
                                 <button
                                     onClick={handleManualSubmit}
-                                    className="flex-[2] py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black rounded-lg text-sm transition-colors shadow-lg shadow-indigo-500/20"
+                                    className={`${neoBtn} neo-btn-primary flex-[2] py-3 text-sm`}
                                 >
                                     Analyze Now!
                                 </button>
@@ -430,15 +513,15 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
 
                 {scanState === 'processing' && (
                     <div className="text-center py-10">
-                        <Loader2 size={48} color="#a855f7" strokeWidth={2} className="animate-spin mx-auto mb-4" />
-                        <h3 className="text-white font-bold">Analyzing Data...</h3>
+                        <Loader2 size={48} color="#f8fafc" strokeWidth={2.5} className="animate-spin mx-auto mb-4" />
+                        <h3 className="text-slate-50 font-black uppercase">Analyzing Data...</h3>
                     </div>
                 )}
 
                 {scanState === 'success' && (
                     <div className="text-center py-10">
-                        <CheckCircle size={48} color="#22c55e" strokeWidth={1.5} className="mx-auto mb-4" />
-                        <h3 className="text-white font-bold">Success!</h3>
+                        <CheckCircle size={48} color="#f8fafc" strokeWidth={2} className="mx-auto mb-4" />
+                        <h3 className="text-slate-50 font-black uppercase">Success!</h3>
                     </div>
                 )}
             </div>
