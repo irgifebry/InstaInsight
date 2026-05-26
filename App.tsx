@@ -151,7 +151,7 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {step === 'upload' && (
           <div className="max-w-4xl mx-auto animate-fade-in-up">
             <div className="text-center mb-10">
@@ -216,7 +216,7 @@ const App: React.FC = () => {
             </div>
 
             <div
-              className="overflow-hidden"
+              className="overflow-hidden w-full"
               style={{
                 border: '3px solid #f8fafc',
                 boxShadow: '6px 6px 0 #000000',
