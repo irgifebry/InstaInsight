@@ -21,13 +21,11 @@ export const StatsCard: React.FC<StatsCardProps> = ({
     <div
       id={`stats-card-${title.toLowerCase().replace(/\s+/g, '-')}`}
       onClick={onClick}
-      className={`relative p-5 cursor-pointer transition-all duration-150 h-full flex flex-col justify-between
-        ${isActive ? 'translate-x-[-2px] translate-y-[-2px]' : 'hover:translate-x-[-1px] hover:translate-y-[-1px]'}
-      `}
+      className="relative p-5 cursor-pointer transition-all duration-150 h-full flex flex-col justify-between hover:translate-y-[-1px]"
       style={{
         background: isActive ? activeBgColor : '#131824',
         border: '3px solid #f8fafc',
-        boxShadow: isActive ? '6px 6px 0 #000000' : '4px 4px 0 #000000',
+        boxShadow: '4px 4px 0 #000000',
         borderRadius: '16px',
       }}
     >
