@@ -1,4 +1,4 @@
-const SCRIPT_CONTENT = `
+if (window.location.search.includes("ii_scan=true")) {
 (async () => {
   try {
       const sleep = (ms) => new Promise(r => setTimeout(r, ms));
@@ -164,23 +164,5 @@ const SCRIPT_CONTENT = `
   } catch (e) {
     alert("Error: " + e.message);
   }
-})()`;
-
-export const getScraperScript = () => {
-  return SCRIPT_CONTENT
-    .replace(/\/\*[\s\S]*?\*\//gm, ' ')
-    .split('\n')
-    .map(line => {
-      const l = line.trim();
-      return l.startsWith('//') ? '' : l;
-    })
-    .filter(line => line.length > 0)
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-};
-
-export const getBookmarkletHref = () => {
-  const script = getScraperScript();
-  return `javascript:(function(){${encodeURIComponent(script)}})();`;
-};
+})();
+}

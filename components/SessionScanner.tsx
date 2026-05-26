@@ -25,7 +25,7 @@ interface SessionScannerProps {
 }
 
 const neoBtn = 'neo-btn font-black uppercase tracking-wide transition-all';
-const neoCard = 'border-[3px] border-slate-50 bg-slate-900';
+const neoCard = 'border-[3px] border-slate-50 bg-slate-900 rounded-2xl';
 const neoShadow = { boxShadow: '4px 4px 0 #000000' };
 const neoShadowLg = { boxShadow: '6px 6px 0 #000000' };
 
@@ -45,13 +45,14 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
     const [mobileStep, setMobileStep] = useState(1);
     const [manualJson, setManualJson] = useState('');
     const [copyFeedback, setCopyFeedback] = useState(false);
+    const [mobileBrowser, setMobileBrowser] = useState<'chrome' | 'safari'>('chrome');
 
     const processingRef = useRef(false);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const bookmarkletRef = useRef<HTMLAnchorElement>(null);
 
     const isExtension = typeof chrome !== 'undefined' && !!chrome.runtime && !!chrome.runtime.id;
-    const instagramUrl = `https://www.instagram.com/?t=${Date.now()}`;
+    const instagramUrl = `https://www.instagram.com/?t=${Date.now()}&ii_scan=true`;
 
     useEffect(() => {
         if (isExtension) return;
@@ -220,7 +221,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
             <div className="text-center mb-6">
                 <div
                     className="inline-flex items-center justify-center p-4 mb-4"
-                    style={{ background: '#1e293b', border: '3px solid #f8fafc', ...neoShadowLg }}
+                    style={{ background: '#1e293b', border: '3px solid #f8fafc', ...neoShadowLg, borderRadius: '12px' }}
                 >
                     <Camera size={32} color="#f8fafc" strokeWidth={2} />
                 </div>
@@ -283,7 +284,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                         <div className="flex items-center gap-2 mb-3">
                                             <span
                                                 className="flex items-center justify-center w-7 h-7 text-slate-50 text-xs font-black"
-                                                style={{ background: '#1e293b', border: '2px solid #f8fafc', boxShadow: '2px 2px 0 #000' }}
+                                                style={{ background: '#1e293b', border: '2px solid #f8fafc', boxShadow: '2px 2px 0 #000', borderRadius: '8px' }}
                                             >
                                                 1
                                             </span>
@@ -300,6 +301,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                                 background: '#1e293b',
                                                 border: '3px dashed #f8fafc',
                                                 boxShadow: '3px 3px 0 #000',
+                                                borderRadius: '12px',
                                             }}
                                             title="Drag me to your bookmarks bar!"
                                         >
@@ -335,6 +337,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                                 background: mobileStep >= s ? '#e2e8f0' : '#090b11',
                                                 border: '2px solid #f8fafc',
                                                 boxShadow: mobileStep >= s ? '2px 2px 0 #000' : 'none',
+                                                borderRadius: '4px',
                                             }}
                                         />
                                     ))}
@@ -370,25 +373,74 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                                             <div className="flex justify-center mb-4">
                                                 <Zap size={40} color="#f8fafc" strokeWidth={2} />
                                             </div>
-                                            <h3 className="text-xl font-black text-slate-50 mb-2 uppercase">Step 2: The Ninja Trick</h3>
+                                            <h3 className="text-xl font-black text-slate-50 mb-2 uppercase">Step 2: Save Bookmarklet</h3>
+                                            
+                                            <div className="flex gap-2 mb-4 justify-center">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setMobileBrowser('chrome')}
+                                                    className={`${neoBtn} text-xs py-1.5 px-3 ${mobileBrowser === 'chrome' ? 'neo-btn-primary' : ''}`}
+                                                >
+                                                    Chrome / Android
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setMobileBrowser('safari')}
+                                                    className={`${neoBtn} text-xs py-1.5 px-3 ${mobileBrowser === 'safari' ? 'neo-btn-primary' : ''}`}
+                                                >
+                                                    Safari / iPhone
+                                                </button>
+                                            </div>
+
                                             <div
                                                 className={`${neoCard} p-5 text-left mb-6`}
                                                 style={{ background: '#090b11', ...neoShadow }}
                                             >
-                                                <p className="text-sm text-slate-50 mb-4 leading-relaxed font-medium">
-                                                    To bypass restrictions, follow this carefully:
+                                                <p className="text-xs text-slate-50 mb-3 font-black uppercase tracking-wider">
+                                                    {mobileBrowser === 'chrome' ? 'Chrome Instructions:' : 'Safari Instructions:'}
                                                 </p>
-                                                <ul className="space-y-3 text-xs text-slate-300 font-medium">
-                                                    <li className="flex gap-2">
-                                                        <span className="font-black text-slate-50">1.</span>
-                                                        <span>Hold the button below & select <b>"Open in New Tab"</b>.</span>
-                                                    </li>
-                                                    <li className="flex gap-2">
-                                                        <span className="font-black text-slate-50">2.</span>
-                                                        <span>In the new tab, type <code className="bg-slate-900 px-1 font-mono font-bold border border-slate-50">javascript:</code> then paste.</span>
-                                                    </li>
-                                                </ul>
+                                                
+                                                {mobileBrowser === 'chrome' ? (
+                                                    <ul className="space-y-3 text-xs text-slate-300 font-medium">
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">1.</span>
+                                                            <span><b>Bookmark this page</b>: Tap the three-dot menu and select the Star icon.</span>
+                                                        </li>
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">2.</span>
+                                                            <span><b>Edit Bookmark</b>: Tap three dots, go to Bookmarks, find this page, and tap Edit.</span>
+                                                        </li>
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">3.</span>
+                                                            <span><b>Paste URL</b>: Change the name to "Scan IG" and replace the URL completely with the copied script code.</span>
+                                                        </li>
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">4.</span>
+                                                            <span><b>Run</b>: Open Instagram in a new tab, tap the address bar, type "Scan IG", and tap the bookmark recommendation.</span>
+                                                        </li>
+                                                    </ul>
+                                                ) : (
+                                                    <ul className="space-y-3 text-xs text-slate-300 font-medium">
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">1.</span>
+                                                            <span><b>Bookmark this page</b>: Tap the Share button, select Add Bookmark, name it "Scan IG", and Save.</span>
+                                                        </li>
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">2.</span>
+                                                            <span><b>Edit Bookmark</b>: Tap Bookmarks icon, find "Scan IG", press and hold, and select Edit.</span>
+                                                        </li>
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">3.</span>
+                                                            <span><b>Paste URL</b>: Clear the address, paste the script code, and save.</span>
+                                                        </li>
+                                                        <li className="flex gap-2">
+                                                            <span className="font-black text-slate-50">4.</span>
+                                                            <span><b>Run</b>: Open Instagram in a new tab, tap the Bookmarks icon, and tap "Scan IG".</span>
+                                                        </li>
+                                                    </ul>
+                                                )}
                                             </div>
+                                            
                                             <a
                                                 href={instagramUrl}
                                                 onClick={handleDirectClick}
@@ -448,7 +500,7 @@ export const SessionScanner: React.FC<SessionScannerProps> = ({ onDataLoaded }) 
                         <div className="text-center mb-6">
                             <div
                                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-black uppercase animate-pulse text-slate-50"
-                                style={{ background: '#1e293b', border: '3px solid #f8fafc', boxShadow: '3px 3px 0 #000' }}
+                                style={{ background: '#1e293b', border: '3px solid #f8fafc', boxShadow: '3px 3px 0 #000', borderRadius: '8px' }}
                             >
                                 <div className="w-2.5 h-2.5 bg-slate-50" />
                                 Waiting for data sync...

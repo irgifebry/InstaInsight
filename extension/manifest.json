@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "InstaInsight Scanner",
+  "version": "1.0.0",
+  "description": "Securely scan Instagram followers.",
+  "icons": {
+    "16": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
+  "action": {
+    "default_icon": "logo.png",
+    "default_title": "Scan Instagram Followers"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.instagram.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

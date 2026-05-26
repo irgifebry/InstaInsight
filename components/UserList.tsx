@@ -72,6 +72,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, onExport }) =>
                   background: '#131824',
                   border: '2px solid #f8fafc',
                   boxShadow: '3px 3px 0 #000000',
+                  borderRadius: '12px',
                 }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLDivElement).style.background = '#1e293b';
@@ -89,6 +90,7 @@ export const UserList: React.FC<UserListProps> = ({ users, title, onExport }) =>
                       background: '#1e293b',
                       border: '2px solid #f8fafc',
                       boxShadow: '2px 2px 0 #000000',
+                      borderRadius: '8px',
                     }}
                   >
                     {user.username.charAt(0).toUpperCase()}

@@ -5,6 +5,7 @@ interface StatsCardProps {
   count: number;
   icon: React.ReactNode;
   isActive?: boolean;
+  activeBgColor?: string;
   onClick?: () => void;
 }
 
@@ -13,6 +14,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   count,
   icon,
   isActive,
+  activeBgColor = '#e2e8f0',
   onClick,
 }) => {
   return (
@@ -23,9 +25,10 @@ export const StatsCard: React.FC<StatsCardProps> = ({
         ${isActive ? 'translate-x-[-2px] translate-y-[-2px]' : 'hover:translate-x-[-1px] hover:translate-y-[-1px]'}
       `}
       style={{
-        background: isActive ? '#e2e8f0' : '#131824',
+        background: isActive ? activeBgColor : '#131824',
         border: '3px solid #f8fafc',
         boxShadow: isActive ? '6px 6px 0 #000000' : '4px 4px 0 #000000',
+        borderRadius: '16px',
       }}
     >
       <div className="flex items-start justify-between mb-4">
@@ -35,6 +38,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
             background: isActive ? '#131824' : '#1e293b',
             border: '2px solid #f8fafc',
             boxShadow: '2px 2px 0 #000000',
+            borderRadius: '8px',
           }}
         >
           {icon}
@@ -46,6 +50,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
             background: isActive ? '#131824' : '#1e293b',
             border: '2px solid #f8fafc',
             boxShadow: '2px 2px 0 #000000',
+            borderRadius: '6px',
           }}
         >
           {isActive ? 'Active' : 'View'}

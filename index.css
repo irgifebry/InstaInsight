@@ -32,12 +32,14 @@
   background: var(--neo-surface);
   border: var(--neo-border);
   box-shadow: var(--neo-shadow);
+  border-radius: 16px;
 }
 
 .neo-card-lg {
   background: var(--neo-surface);
   border: var(--neo-border);
   box-shadow: var(--neo-shadow-lg);
+  border-radius: 16px;
 }
 
 .neo-btn {
@@ -47,6 +49,7 @@
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   color: var(--neo-text);
   background: var(--neo-elevated);
+  border-radius: 12px;
 }
 
 .neo-btn:hover {
@@ -69,6 +72,7 @@
   box-shadow: var(--neo-shadow-sm);
   background: var(--neo-bg);
   color: var(--neo-text);
+  border-radius: 12px;
 }
 
 .neo-input:focus {
